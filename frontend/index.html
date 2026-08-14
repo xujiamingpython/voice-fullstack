@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>灵语 · 语音 AI 助手</title>
+  <meta name="description" content="能听、能想、能动手、能开口的语音全栈 AI 助手" />
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button id="btnSidebar" class="icon-btn" aria-label="切换会话列表">☰</button>
+      <span class="logo">🎙️ 灵语</span>
+      <span id="sessionTitle" class="session-title">新会话</span>
+    </div>
+    <div class="topbar-right">
+      <span id="modelBadge" class="model-badge">qwen-plus</span>
+      <button id="btnTheme" class="icon-btn" aria-label="切换主题">🌙</button>
+      <button id="btnSettings" class="icon-btn" aria-label="打开设置">⚙️</button>
+    </div>
+  </header>
+
+  <!-- 会话列表（抽屉） -->
+  <aside id="sidebar" class="sidebar" aria-label="会话列表">
+    <button id="btnNewSession" class="btn-new-session">＋ 新建会话</button>
+    <ul id="sessionList" class="session-list"></ul>
+  </aside>
+
+  <!-- 主对话区 -->
+  <main class="chat-area" id="chatArea">
+    <div class="tool-bar">
+      <span>工具：</span>
+      <label class="switch">
+        <input type="checkbox" id="toggleTools" checked />
+        <span class="slider"></span>
+      </label>
+      <span>MCP</span>
+    </div>
+
+    <div id="messageList" class="message-list" aria-live="polite">
+      <!-- 空状态由 JS 注入 -->
+    </div>
+
+    <!-- 输入区 -->
+    <footer class="input-area">
+      <button id="btnKeyboard" class="icon-btn" aria-label="切换文字输入">⌨️</button>
+      <input id="textInput" class="text-input" type="text" placeholder="输入消息，或按住麦克风说话…" autocomplete="off" />
+      <button id="btnMic" class="mic-btn" aria-label="语音输入">
+        <span class="mic-icon">🎤</span>
+        <span class="mic-hint">按住说话</span>
+      </button>
+    </footer>
+  </main>
+
+  <!-- 设置抽屉 -->
+  <div id="settingsOverlay" class="overlay hidden">
+    <aside class="settings-drawer" aria-label="设置">
+      <div class="settings-header">
+        <h2>设置</h2>
+        <button id="btnCloseSettings" class="icon-btn" aria-label="关闭设置">✕</button>
+      </div>
+      <div class="settings-body">
+        <h3>模型设置</h3>
+        <label>LLM 厂商
+          <select id="setProvider">
+            <option value="aliyun">阿里云百炼</option>
+            <option value="deepseek">Deepseek</option>
+          </select>
+        </label>
+        <h3>语音设置</h3>
+        <label><input type="checkbox" id="setTTS" checked /> 启用语音播报</label>
+        <label>音色
+          <select id="setVoice">
+            <option value="ailiao">温柔女声</option>
+            <option value="aixia">活力女声</option>
+            <option value="aiyang">磁性男声</option>
+          </select>
+        </label>
+      </div>
+      <div class="settings-footer">
+        <button id="btnResetSettings" class="btn-ghost">重置</button>
+        <button id="btnSaveSettings" class="btn-primary">保存</button>
+      </div>
+    </aside>
+  </div>
+
+  <div id="toast" class="toast hidden" role="status"></div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
