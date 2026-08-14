@@ -1,42 +1,116 @@
 /**
- * 全局样式 —— 设计 Token（与 docs/04-页面设计Prompt.md 保持一致）
+ * 知行AI语音导航 · 全局设计 Token（v3.0 规范）
+ * 主题切换：最外层 view 加 class="theme-dark" / "theme-light"
  */
 page {
-  /* 主色 */
-  --color-primary: #5B8DEF;
-  --color-primary-dark: #4070D4;
-  --color-accent: #7C5BEF;
-  --color-success: #00D4A0;
-  --color-warning: #FFB547;
-  --color-danger: #FF5252;
+  --bg: #0F1115;
+  --card: #1A1E27;
+  --card-glass: rgba(26, 30, 39, 0.88);
+  --primary: #5B8DEF;
+  --primary-grad: linear-gradient(135deg, #5B8DEF 0%, #7C5BEF 100%);
+  --accent-purple: #7C5BEF;
+  --accent-cyan: #00D4A0;
+  --danger: #FF5252;
+  --text: #E8EAF0;
+  --text-2: #8A8F9C;
+  --divider: rgba(232, 234, 240, 0.08);
+  --code-bg: #0B0E14;
+  --nav-bg: rgba(15, 17, 21, 0.92);
+  --input-bg: rgba(26, 30, 39, 0.6);
+  --btn-border: rgba(232, 234, 240, 0.25);
+  --map-bg: #10141C;
+  --bubble-user: linear-gradient(135deg, #5B8DEF 0%, #7C5BEF 100%);
+  --bubble-ai: rgba(26, 30, 39, 0.88);
+  --bubble-ai-border: rgba(232, 234, 240, 0.06);
+  --shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.35);
+  --safe-bottom: env(safe-area-inset-bottom);
 
-  /* 文字 */
-  --text-primary: #E8EAF0;
-  --text-secondary: #8A8F9C;
-  --text-tertiary: #5A5F6C;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue",
+    "Microsoft YaHei", sans-serif;
+  font-size: 32rpx;
+  line-height: 1.5;
+}
 
-  /* 背景 */
-  --bg-base: #0F1115;
-  --bg-elevated: rgba(255, 255, 255, 0.04);
-  --bg-glass: rgba(255, 255, 255, 0.08);
+/* 浅色主题覆盖 */
+.theme-light {
+  --bg: #F7F8FA;
+  --card: #FFFFFF;
+  --card-glass: rgba(255, 255, 255, 0.92);
+  --primary: #5B8DEF;
+  --accent-purple: #7C5BEF;
+  --accent-cyan: #00D4A0;
+  --danger: #FF5252;
+  --text: #1A1D24;
+  --text-2: #8A8F9C;
+  --divider: rgba(26, 29, 36, 0.08);
+  --code-bg: #F1F3F7;
+  --nav-bg: rgba(247, 248, 250, 0.92);
+  --input-bg: rgba(255, 255, 255, 0.9);
+  --btn-border: rgba(26, 29, 36, 0.15);
+  --map-bg: #E8EDF3;
+  --bubble-ai: rgba(255, 255, 255, 0.96);
+  --bubble-ai-border: rgba(26, 29, 36, 0.08);
+  --shadow: 0 8rpx 24rpx rgba(26, 29, 36, 0.08);
+}
 
-  /* 边框 / 阴影 */
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-default: rgba(255, 255, 255, 0.12);
-  --shadow-sm: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
-  --shadow-glow: 0 8rpx 32rpx rgba(91, 141, 239, 0.12);
-
-  /* 圆角 */
-  --radius-sm: 16rpx;
-  --radius-md: 24rpx;
-  --radius-lg: 32rpx;
-  --radius-xl: 40rpx;
-
-  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
-  font-size: 28rpx;
-  line-height: 1.6;
-  color: var(--text-primary);
-  background: var(--bg-base);
+view,
+text,
+scroll-view,
+button,
+input,
+map {
   box-sizing: border-box;
+}
+
+/* 通用卡片 */
+.card {
+  background: var(--card-glass);
+  border-radius: 32rpx;
+  box-shadow: var(--shadow);
+}
+
+/* 通用主按钮 */
+.btn-primary {
+  background: var(--primary);
+  color: #FFFFFF;
+  border-radius: 24rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  text-align: center;
+  line-height: 88rpx;
+  border: none;
+}
+
+.btn-primary::after {
+  border: none;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--primary);
+  border: 2rpx solid var(--primary);
+  border-radius: 24rpx;
+  font-size: 32rpx;
+  text-align: center;
+  line-height: 84rpx;
+}
+
+.btn-ghost::after {
+  border: none;
+}
+
+/* 单行省略 */
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* 胶囊占位（右上角） */
+.capsule-space {
+  width: 174rpx;
+  height: 64rpx;
+  flex-shrink: 0;
 }

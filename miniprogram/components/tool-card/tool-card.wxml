@@ -1,0 +1,42 @@
+<view class="tool-card card status-{{status}}">
+  <!-- 标题栏 -->
+  <view class="tool-head" bindtap="_toggle">
+    <view class="tool-icon">
+      <view class="tool-icon-dot"></view>
+    </view>
+    <text class="tool-name">{{label || tool}}</text>
+    <view class="tool-right">
+      <text class="tool-status-text">
+        {{status === 'calling' ? '调用中…' : (status === 'done' ? '已完成' : '调用失败')}}
+      </text>
+      <text class="tool-arrow">{{expanded ? '▾' : '▸'}}</text>
+    </view>
+  </view>
+
+  <!-- 展开：代码块参数区 -->
+  <view wx:if="{{expanded || status === 'calling'}}" class="code-block">
+    <view class="code-pulse {{status === 'calling' ? 'on' : ''}}"></view>
+    <text class="code-text">{{argsText}}</text>
+  </view>
+
+  <!-- 底部状态/结果区 -->
+  <view wx:if="{{status === 'calling'}}" class="tool-foot">
+    <text class="foot-text">正在调用 {{tool}}…</text>
+  </view>
+
+  <view wx:elif="{{status === 'done'}}" class="tool-foot done">
+    <view class="status-light green"></view>
+    <text class="foot-text">已完成 · {{duration}} · 返回 {{count}} 个结果</text>
+  </view>
+
+  <view wx:else class="tool-foot fail">
+    <view class="status-light red"></view>
+    <text class="foot-text">调用失败，请稍后重试</text>
+  </view>
+
+  <!-- 摘要 + 打开地图 -->
+  <view wx:if="{{status === 'done' && summary}}" class="tool-summary">
+    <text class="summary-text ellipsis">{{summary}}</text>
+    <view class="open-map" catchtap="_openMap">在地图中打开</view>
+  </view>
+</view>

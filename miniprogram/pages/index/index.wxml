@@ -1,20 +1,118 @@
-<!-- 主聊天页（骨架占位，业务实现待文档确认后开发） -->
-<view class="page">
-  <view class="nav">
-    <view class="nav-title">灵语 · AI 语音助手</view>
-    <view class="nav-actions">
-      <view class="nav-icon" bindtap="goSettings">⚙</view>
+<view class="page theme-{{theme}}">
+  <!-- 自定义导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-status" style="height: {{statusBarHeight}}px;"></view>
+    <view class="nav-main">
+      <view class="nav-title-wrap">
+        <text class="nav-title">知行AI语音导航</text>
+        <text class="nav-sub">AI 语音导航助手</text>
+      </view>
+      <view class="capsule-space"></view>
     </view>
   </view>
 
-  <scroll-view class="chat" scroll-y enable-flex>
-    <view class="chat-empty">
-      <view class="empty-title">开启你的第一次对话</view>
-      <view class="empty-sub">按住下方按钮说话，或直接输入文字</view>
+  <!-- 断网横幅 -->
+  <view wx:if="{{offline}}" class="offline-banner">
+    <text class="offline-text">网络连接已断开</text>
+  </view>
+
+  <!-- 消息流 -->
+  <scroll-view class="chat-scroll" scroll-y scroll-into-view="{{scrollTo}}"
+    scroll-with-animation bindscrolltolower="onScrollLower">
+    <view class="chat-inner">
+      <!-- 空状态 -->
+      <view wx:if="{{!messages.length}}" class="empty-state">
+        <view class="empty-icon">
+          <view class="empty-mic"></view>
+        </view>
+        <text class="empty-title">开启你的第一次对话</text>
+        <text class="empty-sub">按住下方按钮说话，或直接输入文字</text>
+        <view class="suggest-list">
+          <view class="suggest" bindtap="onSuggest" data-text="今天北京天气怎么样？">
+            <text>今天北京天气怎么样？</text>
+          </view>
+          <view class="suggest" bindtap="onSuggest" data-text="附近1公里内有什么咖啡馆？">
+            <text>附近1公里内有什么咖啡馆？</text>
+          </view>
+          <view class="suggest" bindtap="onSuggest" data-text="从国贸到大兴机场怎么走？">
+            <text>从国贸到大兴机场怎么走？</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 消息列表 -->
+      <block wx:for="{{messages}}" wx:key="id">
+        <!-- 文本/AI 消息 -->
+        <message-item
+          wx:if="{{item.type === 'text' || item.type === 'thinking'}}"
+          msg="{{item}}"
+          speaking="{{item.id === speakingMsgId}}"
+          bind:copy="onCopy"
+          bind:regenerate="onRegenerate"
+          bind:speak="onSpeak"
+        ></message-item>
+
+        <!-- 工具调用卡片 -->
+        <view wx:elif="{{item.type === 'tool'}}" class="tool-row {{item.role === 'user' ? 'right' : ''}}">
+          <tool-card
+            tool="{{item.tool}}"
+            label="{{item.label}}"
+            status="{{item.toolStatus}}"
+            args="{{item.args}}"
+            summary="{{item.summary}}"
+            duration="{{item.duration}}"
+            count="{{item.count}}"
+            bind:openmap="openFullMap"
+          ></tool-card>
+        </view>
+
+        <!-- 地图结果卡片 -->
+        <view wx:elif="{{item.type === 'map'}}" class="tool-row">
+          <map-card
+            poi-list="{{item.poiList}}"
+            center="{{item.center}}"
+            bind:openmap="openFullMap"
+          ></map-card>
+        </view>
+      </block>
     </view>
   </scroll-view>
 
+  <!-- 底部输入栏 -->
   <view class="input-bar">
-    <view class="mic-btn">🎤</view>
+    <!-- 文字输入模式 -->
+    <view wx:if="{{inputMode}}" class="text-input-row">
+      <input class="text-input" value="{{textInput}}" placeholder="输入你的问题…"
+        placeholder-class="input-placeholder" confirm-type="send" bindinput="onTextInput"
+        bindconfirm="sendText" />
+      <view class="send-btn {{textInput ? 'active' : ''}}" bindtap="sendText">
+        <text>发送</text>
+      </view>
+    </view>
+
+    <!-- 语音模式 -->
+    <block wx:else>
+      <mic-button
+        status="{{micStatus}}"
+        duration="{{recordMs}}"
+        volume="{{volume}}"
+        disabled="{{offline || busy}}"
+        bind:start="onRecStart"
+        bind:end="onRecEnd"
+        bind:cancel="onRecCancel"
+        bind:cancelend="onRecCancelEnd"
+        bind:opensetting="onOpenSetting"
+      ></mic-button>
+    </block>
+
+    <!-- 底部工具行 -->
+    <view class="input-tools">
+      <view class="tool-icon-btn" bindtap="toggleInputMode">
+        <text class="ti">{{inputMode ? '🎤' : '⌨'}}</text>
+      </view>
+      <view class="tool-icon-btn" bindtap="goSessions">
+        <text class="ti">🕘</text>
+      </view>
+    </view>
   </view>
 </view>

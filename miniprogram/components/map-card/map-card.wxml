@@ -1,0 +1,26 @@
+<view class="map-card card">
+  <!-- 地图区域 -->
+  <view class="map-wrap">
+    <map
+      wx:if="{{markers.length}}"
+      class="map"
+      latitude="{{center.latitude}}"
+      longitude="{{center.longitude}}"
+      markers="{{markers}}"
+      scale="13"
+      show-location
+      enable-zoom
+    ></map>
+    <view wx:else class="map-loading">
+      <view class="loading-dot d1"></view>
+      <view class="loading-dot d2"></view>
+      <view class="loading-dot d3"></view>
+    </view>
+  </view>
+
+  <!-- 摘要条 -->
+  <view class="map-foot">
+    <text class="map-summary">{{summary}}</text>
+    <view class="view-all" catchtap="_openMap">查看全部</view>
+  </view>
+</view>

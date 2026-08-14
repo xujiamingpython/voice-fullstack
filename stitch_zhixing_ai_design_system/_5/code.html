@@ -1,0 +1,297 @@
+<!DOCTYPE html><html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>知行AI语音导航 - 附近结果</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#aec6ff",
+                        "surface": "#111317",
+                        "on-secondary-container": "#beadff",
+                        "inverse-on-surface": "#2f3035",
+                        "primary-fixed-dim": "#aec6ff",
+                        "error": "#ffb4ab",
+                        "secondary-fixed-dim": "#ccbeff",
+                        "surface-container-high": "#282a2e",
+                        "on-error-container": "#ffdad6",
+                        "inverse-primary": "#1e5bba",
+                        "primary-fixed": "#d8e2ff",
+                        "secondary-fixed": "#e7deff",
+                        "on-secondary-fixed": "#1e0060",
+                        "tertiary": "#29e0ab",
+                        "surface-tint": "#aec6ff",
+                        "on-surface-variant": "#c3c6d4",
+                        "on-secondary": "#340098",
+                        "on-tertiary-fixed": "#002116",
+                        "secondary-container": "#4e24c0",
+                        "secondary": "#ccbeff",
+                        "surface-dim": "#111317",
+                        "error-container": "#93000a",
+                        "on-primary-fixed": "#001a43",
+                        "on-tertiary": "#003828",
+                        "on-secondary-fixed-variant": "#4c20bd",
+                        "surface-container": "#1e2024",
+                        "on-primary-container": "#00275e",
+                        "on-error": "#690005",
+                        "on-tertiary-container": "#003122",
+                        "on-surface": "#e2e2e8",
+                        "tertiary-container": "#00a47b",
+                        "tertiary-fixed-dim": "#29e0ab",
+                        "on-background": "#e2e2e8",
+                        "surface-container-low": "#1a1c20",
+                        "tertiary-fixed": "#55fdc6",
+                        "surface-container-lowest": "#0c0e12",
+                        "outline": "#8d909e",
+                        "background": "#111317",
+                        "primary-container": "#5d8ef1",
+                        "surface-variant": "#333539",
+                        "on-tertiary-fixed-variant": "#00513b",
+                        "outline-variant": "#424752",
+                        "surface-bright": "#37393e",
+                        "inverse-surface": "#e2e2e8",
+                        "on-primary": "#002e6b",
+                        "on-primary-fixed-variant": "#004397",
+                        "surface-container-highest": "#333539"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "stack-md": "16px",
+                        "gutter": "12px",
+                        "container-margin": "20px",
+                        "stack-sm": "8px",
+                        "stack-lg": "32px"
+                    },
+                    fontFamily: {
+                        "body-lg": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"],
+                        "caption-xs": ["Hanken Grotesk"],
+                        "display-navigation": ["Hanken Grotesk"],
+                        "label-sm": ["Hanken Grotesk"],
+                        "headline-main": ["Hanken Grotesk"]
+                    },
+                    fontSize: {
+                        "body-lg": ["21.3px", { "lineHeight": "32px", "fontWeight": "400" }],
+                        "body-md": ["18.6px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "caption-xs": ["16px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "display-navigation": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["17.3px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-main": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .map-bg {
+            background-color: #10141C;
+            background-image: 
+                linear-gradient(#1A1E27 1px, transparent 1px),
+                linear-gradient(90deg, #1A1E27 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        
+        .marker {
+            position: absolute;
+            transform: translate(-50%, -100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .marker-icon {
+            width: 24px;
+            height: 32px;
+            background-color: #EF5B5B;
+            border-radius: 12px 12px 12px 0;
+            transform: rotate(-45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .marker-icon::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+        
+        .marker-label {
+            background: #1A1E27;
+            color: #E8EAF0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-top: 4px;
+            white-space: nowrap;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .marker-blue .marker-icon {
+            background-color: #5B8DEF;
+        }
+        
+        /* Custom scrollbar for list */
+        .results-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .results-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .results-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md h-screen w-screen overflow-hidden flex flex-col items-center justify-center relative">
+<!-- Mobile Device Container -->
+<div class="w-full max-w-[375px] h-full max-h-[812px] bg-background relative flex flex-col sm:border sm:border-surface-variant sm:rounded-[40px] overflow-hidden shadow-2xl">
+<!-- Status Bar Fake -->
+<div class="h-[44px] w-full flex justify-between items-center px-[20px] absolute top-0 z-50 text-[14px] font-semibold tracking-wide pointer-events-none text-white">
+<span>9:41</span>
+<div class="flex gap-2 items-center">
+<span class="material-symbols-outlined text-[16px] leading-none">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[16px] leading-none">wifi</span>
+<span class="material-symbols-outlined text-[16px] leading-none">battery_full</span>
+</div>
+</div>
+<!-- TopAppBar -->
+<header class="bg-background dark:bg-background w-full top-0 sticky flex justify-between items-center px-container-margin h-14 z-40 mt-[44px]">
+<button class="text-primary dark:text-primary-fixed-dim hover:opacity-80 transition-opacity duration-200 p-2 -ml-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-main text-[18px] font-medium text-white">附近结果</h1>
+<button class="text-[#8A8F9C] text-[13px] hover:opacity-80 transition-opacity duration-200">
+                筛选
+            </button>
+</header>
+<!-- Map Area -->
+<main class="flex-1 map-bg relative w-full overflow-hidden">
+<!-- Center Marker -->
+<div class="marker marker-blue" style="top: 50%; left: 50%;">
+<div class="marker-icon"></div>
+</div>
+<!-- Result Markers -->
+<div class="marker" style="top: 30%; left: 30%;">
+<div class="marker-icon"></div>
+<div class="marker-label">星巴克</div>
+</div>
+<div class="marker" style="top: 45%; left: 70%;">
+<div class="marker-icon"></div>
+<div class="marker-label">瑞幸</div>
+</div>
+<div class="marker" style="top: 60%; left: 25%;">
+<div class="marker-icon"></div>
+<div class="marker-label">Manner</div>
+</div>
+<div class="marker" style="top: 25%; left: 65%;">
+<div class="marker-icon"></div>
+<div class="marker-label">M Stand</div>
+</div>
+<div class="marker" style="top: 65%; left: 75%;">
+<div class="marker-icon"></div>
+<div class="marker-label">库迪</div>
+</div>
+<!-- Map Controls & Attribution -->
+<div class="absolute bottom-6 left-4 text-[#8A8F9C] text-[12px]">
+                © 高德地图
+            </div>
+<div class="absolute bottom-6 right-4 flex flex-col gap-2">
+<button class="w-[40px] h-[40px] bg-[#1A1E27] border border-[rgba(255,255,255,0.1)] rounded-full flex items-center justify-center text-white hover:bg-surface-variant transition-colors shadow-lg">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+<button class="w-[40px] h-[40px] bg-[#1A1E27] border border-[rgba(255,255,255,0.1)] rounded-full flex items-center justify-center text-white hover:bg-surface-variant transition-colors shadow-lg">
+<span class="material-symbols-outlined text-[20px]">remove</span>
+</button>
+</div>
+</main>
+<!-- Bottom Sheet (Results & Actions) -->
+<div class="w-full bg-[#1A1E27] rounded-t-[16px] shadow-[0_-8px_30px_rgba(0,0,0,0.5)] flex flex-col absolute bottom-0 z-40 max-h-[50%] transition-transform duration-300">
+<!-- Handle -->
+<div class="w-full flex justify-center pt-3 pb-1 cursor-pointer">
+<div class="w-[36px] h-[4px] bg-[#333539] rounded-full"></div>
+</div>
+<!-- Header -->
+<div class="px-container-margin py-3 flex justify-between items-center border-b border-[rgba(255,255,255,0.05)]">
+<span class="text-[14px] text-white font-medium">5 个结果 · 按距离排序</span>
+<span class="material-symbols-outlined text-[#8A8F9C] text-[18px]">keyboard_arrow_down</span>
+</div>
+<!-- Results List -->
+<div class="flex-1 overflow-y-auto results-list">
+<!-- Item 1 (Active) -->
+<div class="flex items-center px-container-margin py-4 border-b border-[rgba(255,255,255,0.05)] bg-[#1A2433] border-l-[1.5px] border-l-[#5B8DEF]">
+<div class="w-[40px] h-[40px] rounded-full bg-[#2A3B5C] flex items-center justify-center mr-3 shrink-0">
+<span class="material-symbols-outlined text-white text-[20px]">local_cafe</span>
+</div>
+<div class="flex-1 min-w-0 pr-2">
+<div class="text-[16px] text-white font-medium truncate">星巴克 (科技园店)</div>
+<div class="text-[13px] text-[#8A8F9C] truncate mt-0.5">南山区科苑南路科兴科学园A栋1层</div>
+</div>
+<div class="flex flex-col items-end shrink-0">
+<div class="text-[13px] text-[#5B8DEF] font-medium">320m</div>
+<div class="text-[12px] text-[#F5A623] mt-0.5 tracking-[1px]">★★★★☆</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center px-container-margin py-4 border-b border-[rgba(255,255,255,0.05)] hover:bg-surface-variant transition-colors">
+<div class="w-[40px] h-[40px] rounded-full bg-[#282a2e] flex items-center justify-center mr-3 shrink-0">
+<span class="material-symbols-outlined text-white text-[20px]">local_cafe</span>
+</div>
+<div class="flex-1 min-w-0 pr-2">
+<div class="text-[16px] text-white font-medium truncate">瑞幸咖啡 (大冲店)</div>
+<div class="text-[13px] text-[#8A8F9C] truncate mt-0.5">深南大道华润万象天地一层</div>
+</div>
+<div class="flex flex-col items-end shrink-0">
+<div class="text-[13px] text-[#5B8DEF] font-medium">450m</div>
+<div class="text-[12px] text-[#F5A623] mt-0.5 tracking-[1px]">★★★★☆</div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="flex items-center px-container-margin py-4 border-b border-[rgba(255,255,255,0.05)] hover:bg-surface-variant transition-colors">
+<div class="w-[40px] h-[40px] rounded-full bg-[#282a2e] flex items-center justify-center mr-3 shrink-0">
+<span class="material-symbols-outlined text-white text-[20px]">local_cafe</span>
+</div>
+<div class="flex-1 min-w-0 pr-2">
+<div class="text-[16px] text-white font-medium truncate">Manner Coffee</div>
+<div class="text-[13px] text-[#8A8F9C] truncate mt-0.5">南山大道粤海街道办旁</div>
+</div>
+<div class="flex flex-col items-end shrink-0">
+<div class="text-[13px] text-[#5B8DEF] font-medium">680m</div>
+<div class="text-[12px] text-[#F5A623] mt-0.5 tracking-[1px]">★★★★★</div>
+</div>
+</div>
+<!-- Add padding at bottom so last item isn't hidden behind action bar -->
+<div class="h-[76px] w-full"></div>
+</div>
+<!-- Action Bar -->
+<div class="absolute bottom-0 w-full h-[76px] bg-[#1A1E27] border-t border-[rgba(255,255,255,0.05)] px-container-margin pt-3 pb-[34px] flex gap-4">
+<button class="flex-1 h-[44px] rounded-[12px] border border-[#5B8DEF] text-[#5B8DEF] bg-transparent font-medium text-[15px] flex items-center justify-center hover:bg-[#2A3B5C] transition-colors">
+                    复制地址
+                </button>
+<button class="flex-1 h-[44px] rounded-[12px] bg-[#5B8DEF] text-white font-medium text-[15px] flex items-center justify-center hover:bg-[#4a7cde] transition-colors shadow-[0_4px_12px_rgba(91,141,239,0.3)]">
+                    用地图导航
+                </button>
+</div>
+</div>
+</div>
+</body></html>

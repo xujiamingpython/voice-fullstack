@@ -1,0 +1,329 @@
+<!DOCTYPE html><html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>ZhiXing AI Navigation Special States</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        /* Custom Styles & Animations */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #0f131c; /* Background #0F1115 equivalent in our theme roughly surface */
+        }
+
+        /* Hide scrollbar for the horizontal matrix container */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Jumping dots animation */
+        @keyframes jump {
+            0%, 80%, 100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            40% {
+                transform: translateY(-6px);
+                opacity: 1;
+            }
+        }
+        .dot {
+            animation: jump 1.4s infinite ease-in-out both;
+        }
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        /* Pulse for mic */
+        @keyframes mic-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(91, 141, 239, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(91, 141, 239, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(91, 141, 239, 0); }
+        }
+        .animate-mic-pulse {
+            animation: mic-pulse 2s infinite;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-high": "#262a33",
+                        "inverse-surface": "#dfe2ef",
+                        "on-secondary-container": "#beadff",
+                        "on-primary-fixed": "#001a43",
+                        "on-error-container": "#ffdad6",
+                        "on-error": "#690005",
+                        "outline": "#8d909e",
+                        "surface": "#0f131c",
+                        "tertiary-fixed-dim": "#29e0ab",
+                        "tertiary-container": "#00a47b",
+                        "primary-fixed": "#d8e2ff",
+                        "tertiary": "#29e0ab",
+                        "secondary-fixed": "#e7deff",
+                        "inverse-on-surface": "#2c303a",
+                        "on-secondary-fixed-variant": "#4c20bd",
+                        "secondary-container": "#4e24c0",
+                        "surface-container-highest": "#31353e",
+                        "on-tertiary-container": "#003122",
+                        "on-surface-variant": "#c3c6d4",
+                        "error-container": "#93000a",
+                        "surface-container": "#1c2029",
+                        "background": "#0f131c",
+                        "on-secondary-fixed": "#1e0060",
+                        "on-secondary": "#340098",
+                        "surface-tint": "#aec6ff",
+                        "on-surface": "#dfe2ef",
+                        "surface-dim": "#0f131c",
+                        "tertiary-fixed": "#55fdc6",
+                        "primary-fixed-dim": "#aec6ff",
+                        "outline-variant": "#424752",
+                        "surface-bright": "#353943",
+                        "surface-container-low": "#181c24",
+                        "on-primary-fixed-variant": "#004397",
+                        "on-background": "#dfe2ef",
+                        "surface-container-lowest": "#0a0e17",
+                        "secondary": "#ccbeff",
+                        "surface-variant": "#31353e",
+                        "on-tertiary-fixed": "#002116",
+                        "primary": "#aec6ff",
+                        "secondary-fixed-dim": "#ccbeff",
+                        "on-primary-container": "#00275e",
+                        "primary-container": "#5d8ef1", /* #5B8DEF roughly maps here */
+                        "error": "#ffb4ab",
+                        "inverse-primary": "#1e5bba",
+                        "on-primary": "#002e6b",
+                        "on-tertiary-fixed-variant": "#00513b",
+                        "on-tertiary": "#003828",
+                        /* Brand custom overrides if needed to match prompt exactly, but theme colors preferred */
+                        "custom-card": "#1A1E27",
+                        "custom-danger": "#FF5252"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "margin": "20px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "base": "4px",
+                        "xs": "8px",
+                        "xl": "32px",
+                        "gutter": "16px",
+                        "sm": "12px"
+                    },
+                    fontFamily: {
+                        "page-title": ["Noto Sans SC", "sans-serif"],
+                        "body-main": ["Noto Sans SC", "sans-serif"],
+                        "caption": ["Noto Sans SC", "sans-serif"],
+                        "label-bold": ["Noto Sans SC", "sans-serif"]
+                    },
+                    fontSize: {
+                        "page-title": ["24px", { "lineHeight": "32px", "fontWeight": "500" }],
+                        "body-main": ["21px", { "lineHeight": "30px", "fontWeight": "400" }],
+                        "caption": ["17px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-bold": ["16px", { "lineHeight": "20px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" data-snapdom="injected-import"></head>
+<body class="bg-surface text-on-surface min-h-screen flex items-center justify-start p-8 overflow-x-auto no-scrollbar font-body-main">
+<!-- Container for Matrix -->
+<div class="flex space-x-12 mx-auto">
+<!-- ==============================================
+             Screen 1: First-time Empty State
+             ============================================== -->
+<div class="w-[375px] h-[812px] bg-background border border-surface-container-highest rounded-[40px] overflow-hidden flex flex-col relative shadow-2xl shrink-0">
+<!-- TopAppBar: Small Center Aligned -->
+<div class="fixed-top w-full z-50 bg-surface dark:bg-surface flex items-center justify-between px-margin h-14 w-full">
+<span class="material-symbols-outlined text-primary dark:text-primary hover:opacity-80 transition-opacity duration-200 active:scale-95 cursor-pointer">arrow_back_ios</span>
+<h1 class="font-page-title text-page-title text-on-surface dark:text-on-surface font-bold tracking-tight">知行AI语音导航</h1>
+<div class="w-6"></div> <!-- Spacer for center alignment -->
+</div>
+<!-- Content -->
+<div class="flex-1 flex flex-col items-center justify-center px-margin mt-14 mb-[120px]">
+<div class="w-[80px] h-[80px] rounded-full bg-[#1A1E27] flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-[48px]" style="font-variation-settings: 'FILL' 1;">mic</span>
+</div>
+<h2 class="text-[18px] font-medium text-on-surface mb-2">开启你的第一次对话</h2>
+<p class="text-[13px] text-outline text-center mb-10">按住下方按钮说话，或直接输入文字</p>
+<div class="w-full flex flex-col space-y-3">
+<button class="bg-[#1A1E27] rounded-xl py-3 px-4 text-left text-[14px] text-on-surface-variant hover:bg-surface-bright transition-colors border border-surface-container-high border-opacity-50">
+                        "今天北京天气怎么样?"
+                    </button>
+<button class="bg-[#1A1E27] rounded-xl py-3 px-4 text-left text-[14px] text-on-surface-variant hover:bg-surface-bright transition-colors border border-surface-container-high border-opacity-50">
+                        "附近 1 公里内有什么咖啡馆?"
+                    </button>
+<button class="bg-[#1A1E27] rounded-xl py-3 px-4 text-left text-[14px] text-on-surface-variant hover:bg-surface-bright transition-colors border border-surface-container-high border-opacity-50">
+                        "从国贸到大兴机场怎么走?"
+                    </button>
+</div>
+</div>
+<!-- BottomNavBar & Mic Button -->
+<div class="absolute bottom-0 w-full flex flex-col items-center pb-8 pt-4 bg-gradient-to-t from-background via-background to-transparent z-40">
+<button class="w-[64px] h-[64px] rounded-full bg-primary-container text-on-primary-container flex items-center justify-center animate-mic-pulse hover:bg-surface-tint transition-all active:scale-95 shadow-[0_0_20px_rgba(93,142,241,0.3)] backdrop-blur-md">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">mic</span>
+</button>
+<p class="text-[12px] text-outline mt-3">按住说话</p>
+</div>
+</div>
+<!-- ==============================================
+             Screen 2: Mic Permission Denied
+             ============================================== -->
+<div class="w-[375px] h-[812px] bg-background border border-surface-container-highest rounded-[40px] overflow-hidden flex flex-col relative shadow-2xl shrink-0">
+<!-- TopAppBar -->
+<div class="w-full z-50 bg-surface dark:bg-surface flex items-center justify-between px-margin h-14 w-full border-b border-surface-container-highest border-opacity-50">
+<span class="material-symbols-outlined text-primary hover:opacity-80 transition-opacity duration-200 active:scale-95 cursor-pointer">arrow_back_ios</span>
+<h1 class="font-page-title text-[18px] text-on-surface font-bold tracking-tight">知行AI语音导航</h1>
+<span class="material-symbols-outlined text-on-surface-variant">more_horiz</span>
+</div>
+<!-- Content -->
+<div class="flex-1 flex flex-col items-center justify-center px-margin opacity-40">
+<div class="w-[80px] h-[80px] rounded-full bg-[#1A1E27] flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-outline text-[48px]">mic_off</span>
+</div>
+<h2 class="text-[18px] font-medium text-on-surface mb-2">需要麦克风权限</h2>
+<p class="text-[13px] text-outline text-center mb-10">请在右上角 ··· → 设置中开启麦克风</p>
+</div>
+<!-- Modal Overlay -->
+<div class="absolute inset-0 bg-black/60 z-50 flex items-center justify-center px-margin backdrop-blur-sm">
+<div class="w-full bg-white rounded-xl overflow-hidden shadow-2xl">
+<div class="p-6">
+<h3 class="text-[#000000] font-bold text-[18px] mb-2">知行AI语音导航</h3>
+<p class="text-[#555555] text-[14px] leading-relaxed">请求获得你的麦克风权限，用于语音对话</p>
+</div>
+<div class="flex border-t border-gray-200">
+<button class="flex-1 py-4 text-[#000000] font-medium text-[16px] active:bg-gray-100 transition-colors">取消</button>
+<div class="w-[1px] bg-gray-200"></div>
+<button class="flex-1 py-4 text-[#5B8DEF] font-medium text-[16px] active:bg-gray-100 transition-colors">允许</button>
+</div>
+</div>
+</div>
+</div>
+<!-- ==============================================
+             Screen 3: Network Disconnected
+             ============================================== -->
+<div class="w-[375px] h-[812px] bg-background border border-surface-container-highest rounded-[40px] overflow-hidden flex flex-col relative shadow-2xl shrink-0">
+<!-- TopAppBar -->
+<div class="w-full z-50 bg-surface dark:bg-surface flex items-center justify-between px-margin h-14 w-full">
+<span class="material-symbols-outlined text-primary hover:opacity-80 cursor-pointer">arrow_back_ios</span>
+<h1 class="font-page-title text-[18px] text-on-surface font-bold tracking-tight">知行AI语音导航</h1>
+<div class="w-6"></div>
+</div>
+<!-- Error Banner -->
+<div class="w-full bg-[#FF5252] py-2 px-margin flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[16px] mr-2">wifi_off</span>
+<span class="text-[13px] text-white">网络连接已断开</span>
+</div>
+<!-- Content (Chat Area) -->
+<div class="flex-1 flex flex-col px-margin py-6 overflow-y-auto space-y-6">
+<!-- User Msg -->
+<div class="flex justify-end opacity-50">
+<div class="bg-primary-container text-on-primary-container rounded-t-xl rounded-bl-xl px-4 py-3 max-w-[80%]">
+<p class="text-[15px]">帮我查一下附近有没有充电桩？</p>
+</div>
+</div>
+<!-- AI Msg -->
+<div class="flex justify-start opacity-50">
+<div class="bg-[#1A1E27] text-on-surface rounded-t-xl rounded-br-xl px-4 py-3 max-w-[80%] border border-surface-container-highest">
+<p class="text-[15px]">好的，正在为您查找附近的充电桩...</p>
+</div>
+</div>
+</div>
+<!-- BottomNavBar (Disabled) -->
+<div class="absolute bottom-0 w-full flex flex-col items-center pb-8 pt-4 bg-background z-40 border-t border-surface-container-highest">
+<div class="w-full px-margin flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-outline text-[24px]">keyboard</span>
+<button class="w-[56px] h-[56px] rounded-full bg-surface-container-highest text-outline flex items-center justify-center cursor-not-allowed">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">mic_off</span>
+</button>
+<span class="material-symbols-outlined text-outline text-[24px]">explore</span>
+</div>
+</div>
+</div>
+<!-- ==============================================
+             Screen 4: Service Exception
+             ============================================== -->
+<div class="w-[375px] h-[812px] bg-background border border-surface-container-highest rounded-[40px] overflow-hidden flex flex-col relative shadow-2xl shrink-0">
+<!-- TopAppBar -->
+<div class="w-full z-50 bg-surface dark:bg-surface flex items-center justify-between px-margin h-14 w-full">
+<span class="material-symbols-outlined text-primary hover:opacity-80 cursor-pointer">arrow_back_ios</span>
+<h1 class="font-page-title text-[18px] text-on-surface font-bold tracking-tight">知行AI语音导航</h1>
+<div class="w-6"></div>
+</div>
+<!-- Content -->
+<div class="flex-1 flex flex-col items-center justify-center px-margin">
+<div class="relative w-[80px] h-[80px] rounded-full bg-[#1A1E27] flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-outline text-[40px]">dns</span>
+<div class="absolute bottom-1 right-1 bg-background rounded-full p-0.5">
+<span class="material-symbols-outlined text-[#FF5252] text-[20px]" style="font-variation-settings: 'FILL' 1;">error</span>
+</div>
+</div>
+<h2 class="text-[18px] font-medium text-on-surface mb-2">服务暂时不可用</h2>
+<p class="text-[13px] text-outline text-center mb-8">我们正在努力修复，请稍后重试</p>
+<button class="w-[160px] h-[44px] bg-[#5B8DEF] text-white rounded-full font-medium text-[16px] hover:bg-opacity-90 active:scale-95 transition-all">
+                    重试
+                </button>
+</div>
+</div>
+<!-- ==============================================
+             Screen 5: AI Thinking
+             ============================================== -->
+<div class="w-[375px] h-[812px] bg-background border border-surface-container-highest rounded-[40px] overflow-hidden flex flex-col relative shadow-2xl shrink-0">
+<!-- TopAppBar -->
+<div class="w-full z-50 bg-surface dark:bg-surface flex items-center justify-between px-margin h-14 w-full">
+<span class="material-symbols-outlined text-primary hover:opacity-80 cursor-pointer">arrow_back_ios</span>
+<h1 class="font-page-title text-[18px] text-on-surface font-bold tracking-tight">知行AI语音导航</h1>
+<div class="w-6"></div>
+</div>
+<!-- Content (Chat Area) -->
+<div class="flex-1 flex flex-col px-margin py-6 overflow-y-auto space-y-6">
+<!-- User Msg -->
+<div class="flex justify-end">
+<div class="bg-primary-container text-on-primary-container rounded-t-xl rounded-bl-xl px-4 py-3 max-w-[80%] shadow-md">
+<p class="text-[15px]">帮我规划一条周末去延庆山区的自驾路线，要有风景好的地方停车休息。</p>
+</div>
+</div>
+<!-- AI Thinking Bubble -->
+<div class="flex flex-col items-start mt-2">
+<div class="bg-[#1A1E27] text-on-surface rounded-t-xl rounded-br-xl px-4 py-3 min-w-[120px] flex items-center border border-[#5B8DEF]/30 shadow-[0_0_15px_rgba(91,141,239,0.1)]">
+<div class="flex space-x-1 mr-3">
+<div class="w-1.5 h-1.5 bg-[#5B8DEF] rounded-full dot"></div>
+<div class="w-1.5 h-1.5 bg-[#5B8DEF] rounded-full dot"></div>
+<div class="w-1.5 h-1.5 bg-[#5B8DEF] rounded-full dot"></div>
+</div>
+<span class="text-[13px] text-on-surface-variant">正在思考…</span>
+</div>
+<span class="text-[12px] text-outline mt-2 ml-1">已等待 8 秒…</span>
+</div>
+</div>
+<!-- BottomNavBar -->
+<div class="absolute bottom-0 w-full bg-surface-container rounded-t-xl z-50 fixed bottom-0 w-full border-t border-surface-container-highest/20 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+<div class="flex justify-around items-center px-margin pb-8 pt-4">
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2 cursor-pointer">
+<span class="material-symbols-outlined text-[24px]">explore</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full p-4 scale-110 -translate-y-4 shadow-lg ring-4 ring-background cursor-pointer">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">mic</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2 cursor-pointer">
+<span class="material-symbols-outlined text-[24px]">person</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

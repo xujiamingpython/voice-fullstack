@@ -1,0 +1,110 @@
+/** WebSocket 封装（流式对话事件） */
+const config = require('../utils/config.js')
+const storage = require('./storage.js')
+
+class ChatSocket {
+  constructor() {
+    this.socket = null
+    this.handlers = {}   // 事件名 -> [fn]
+    this.connected = false
+    this.reconnectTimer = null
+    this._manualClose = false
+  }
+
+  connect() {
+    if (this.socket || this.connected) return
+    this._manualClose = false
+    const url =
+      config.BASE_URL.replace(/^http/, 'ws') +
+      '/ws/chat?session_id=' + storage.getSessionId()
+    try {
+      this.socket = wx.connectSocket({ url })
+    } catch (e) {
+      this._scheduleReconnect()
+      return
+    }
+
+    this.socket.onOpen(() => {
+      this.connected = true
+      this.emit('open')
+    })
+
+    this.socket.onMessage((res) => {
+      try {
+        const msg = JSON.parse(res.data)
+        this.emit(msg.type || 'message', msg)
+      } catch (e) {
+        this.emit('message', res.data)
+      }
+    })
+
+    this.socket.onClose(() => {
+      this.connected = false
+      this.socket = null
+      this.emit('close')
+      if (!this._manualClose) this._scheduleReconnect()
+    })
+
+    this.socket.onError(() => {
+      this.connected = false
+      this.emit('error')
+    })
+  }
+
+  _scheduleReconnect() {
+    if (this.reconnectTimer || this._manualClose) return
+    this.reconnectTimer = setTimeout(() => {
+      this.reconnectTimer = null
+      this.connect()
+    }, 3000)
+  }
+
+  /** 发送消息：{type:'text', content} / {type:'ping'} / {type:'interrupt'} */
+  send(obj) {
+    if (this.socket && this.connected) {
+      this.socket.send({ data: JSON.stringify(obj) })
+      return true
+    }
+    return false
+  }
+
+  on(evt, fn) {
+    if (!this.handlers[evt]) this.handlers[evt] = []
+    this.handlers[evt].push(fn)
+  }
+
+  off(evt, fn) {
+    const arr = this.handlers[evt]
+    if (!arr) return
+    this.handlers[evt] = arr.filter((f) => f !== fn)
+  }
+
+  emit(evt, payload) {
+    ;(this.handlers[evt] || []).forEach((fn) => {
+      try {
+        fn(payload)
+      } catch (e) {
+        console.error('[ws] handler error', evt, e)
+      }
+    })
+  }
+
+  close() {
+    this._manualClose = true
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer)
+      this.reconnectTimer = null
+    }
+    if (this.socket) {
+      try {
+        this.socket.close({})
+      } catch (e) {
+        /* noop */
+      }
+    }
+    this.socket = null
+    this.connected = false
+  }
+}
+
+module.exports = new ChatSocket()

@@ -3,6 +3,8 @@ import logging
 
 from fastapi import APIRouter
 
+from app import config
+
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
@@ -11,11 +13,13 @@ router = APIRouter()
 async def health():
     return {
         "status": "ok",
-        "version": "0.1.0",
+        "version": "0.2.0",
         "deps": {
-            "aliyun_bailian": bool(__import__("app.config", fromlist=["ALIYUN_BAILIAN_API_KEY"]).ALIYUN_BAILIAN_API_KEY),
-            "asr": bool(__import__("app.config", fromlist=["ALIYUN_ASR_APP_KEY"]).ALIYUN_ASR_APP_KEY),
-            "tts": bool(__import__("app.config", fromlist=["ALIYUN_TTS_APP_KEY"]).ALIYUN_TTS_APP_KEY),
-            "amap": bool(__import__("app.config", fromlist=["AMAP_JS_API_KEY"]).AMAP_JS_API_KEY),
+            "llm_aliyun": bool(config.ALIYUN_BAILIAN_API_KEY),
+            "llm_deepseek": bool(config.DEEPSEEK_API_KEY),
+            "asr": bool(config.ALIYUN_BAILIAN_API_KEY or config.ALIYUN_ASR_TOKEN),
+            "tts": bool(config.ALIYUN_BAILIAN_API_KEY or config.ALIYUN_TTS_TOKEN),
+            "amap": bool(config.AMAP_SERVER_API_KEY),
+            "tencent_lbs": bool(config.TENCENT_LBS_KEY),
         },
     }

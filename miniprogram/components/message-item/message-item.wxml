@@ -1,0 +1,44 @@
+<view class="msg-row {{msg.role}}">
+  <!-- AI 头像 -->
+  <view wx:if="{{msg.role === 'ai'}}" class="avatar">
+    <view class="avatar-wave"></view>
+  </view>
+
+  <view class="msg-main {{msg.role}}">
+    <!-- 用户气泡 -->
+    <view wx:if="{{msg.role === 'user'}}" class="bubble bubble-user">
+      <text class="msg-text-user">{{msg.content}}</text>
+    </view>
+
+    <!-- AI 气泡 -->
+    <block wx:elif="{{msg.role === 'ai'}}">
+      <view wx:if="{{msg.type === 'thinking'}}" class="bubble bubble-ai bubble-thinking">
+        <view class="dot d1"></view>
+        <view class="dot d2"></view>
+        <view class="dot d3"></view>
+        <text class="thinking-text">正在思考…</text>
+        <text wx:if="{{msg.waitSec > 5}}" class="thinking-wait">已等待 {{msg.waitSec}} 秒…</text>
+      </view>
+      <view wx:else class="bubble bubble-ai">
+        <text class="msg-text-ai">{{msg.content}}</text>
+      </view>
+      <!-- AI 操作按钮 -->
+      <view wx:if="{{msg.type !== 'thinking'}}" class="msg-actions">
+        <view class="action" catchtap="_copy">
+          <text class="action-icon">⧉</text><text>复制</text>
+        </view>
+        <view class="action" catchtap="_regenerate">
+          <text class="action-icon">↻</text><text>重新生成</text>
+        </view>
+        <view class="action {{speaking ? 'action-active' : ''}}" catchtap="_speak">
+          <text class="action-icon">{{speaking ? '■' : '▶'}}</text><text>{{speaking ? '停止' : '播放'}}</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 错误消息 -->
+    <view wx:elif="{{msg.role === 'error'}}" class="bubble bubble-error">
+      <text class="msg-text-error">{{msg.content}}</text>
+    </view>
+  </view>
+</view>

@@ -25,7 +25,9 @@ build/
 .eslintcache
 
 # ============ 微信小程序 ============
-miniprogram/project.private.config.json   # 开发者工具私有配置
+# 开发者工具私有配置（根目录或 miniprogram/ 下均忽略）
+project.private.config.json
+miniprogram/project.private.config.json
 miniprogram/miniprogram_npm/              # npm 构建产物
 # 注：project.config.json（公共配置）建议提交
 
@@ -78,6 +80,11 @@ tmp/
 temp/
 *.tmp
 *.bak
+
+# ============ 设计稿压缩包（按需手动入库） ============
+*.zip
+*.rar
+*.7z
 
 # ============ WorkBuddy 项目数据 ============
 .workbuddy/

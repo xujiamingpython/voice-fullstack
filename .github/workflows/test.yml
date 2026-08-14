@@ -1,0 +1,39 @@
+name: Test
+
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+    branches: [develop, main]
+
+jobs:
+  backend-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: |
+          cd backend
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio httpx
+      - name: Run tests
+        run: |
+          cd backend
+          python -m pytest tests/ -v
+
+  miniprogram-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Syntax check
+        run: |
+          cd miniprogram
+          find . -name "*.js" -not -path "./miniprogram_npm/*" -print0 | while IFS= read -r -d '' f; do
+            node --check "$f"
+          done

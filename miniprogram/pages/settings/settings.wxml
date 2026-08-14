@@ -1,25 +1,126 @@
-<!-- 设置页（骨架占位，业务实现待文档确认后开发） -->
-<view class="page">
-  <view class="nav">
-    <view class="nav-back" bindtap="goBack">‹</view>
-    <view class="nav-title">设置</view>
-    <view class="nav-placeholder" />
+<view class="page theme-{{theme}}">
+  <!-- 自定义导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-status" style="height: {{statusBarHeight}}px;"></view>
+    <view class="nav-main">
+      <view class="nav-back" bindtap="goBack">
+        <text class="back-arrow">‹</text>
+      </view>
+      <text class="nav-title">设置</text>
+      <view class="capsule-space"></view>
+    </view>
   </view>
 
-  <view class="group">
-    <view class="group-title">模型设置</view>
-    <view class="cell">LLM 厂商（TODO）</view>
-    <view class="cell">模型名称（TODO）</view>
-  </view>
+  <scroll-view class="set-scroll" scroll-y>
+    <view class="set-inner">
+      <!-- 组1 模型 -->
+      <view class="group">
+        <text class="group-title">模型设置</text>
+        <view class="group-card card">
+          <view class="set-row" bindtap="pickProvider">
+            <text class="row-label">LLM 厂商</text>
+            <text class="row-value">{{settings.provider === 'deepseek' ? 'Deepseek' : '阿里云百炼'}}</text>
+            <text class="row-arrow">›</text>
+          </view>
+          <view class="set-row" bindtap="pickModel">
+            <text class="row-label">模型名称</text>
+            <text class="row-value">{{settings.model}}</text>
+            <text class="row-arrow">›</text>
+          </view>
+          <view class="set-row">
+            <text class="row-label">Temperature</text>
+            <slider class="row-slider" min="0" max="100" value="{{settings.temperature * 100}}"
+              activeColor="#5B8DEF" block-size="20" bindchange="onTempChange" />
+            <text class="row-value">{{settings.temperature.toFixed(1)}}</text>
+          </view>
+          <view class="set-row">
+            <text class="row-label">Max Tokens</text>
+            <text class="row-value">{{settings.maxTokens}}</text>
+            <text class="row-arrow">›</text>
+          </view>
+        </view>
+      </view>
 
-  <view class="group">
-    <view class="group-title">语音设置</view>
-    <view class="cell">TTS 开关（TODO）</view>
-    <view class="cell">TTS 音色（TODO）</view>
-  </view>
+      <!-- 组2 语音 -->
+      <view class="group">
+        <text class="group-title">语音设置</text>
+        <view class="group-card card">
+          <view class="set-row">
+            <text class="row-label">TTS 语音回复</text>
+            <switch checked="{{settings.ttsEnabled}}" color="#5B8DEF" bindchange="onTtsToggle" />
+          </view>
+          <view class="voice-grid">
+            <view wx:for="{{voices}}" wx:key="id"
+              class="voice-card {{settings.voiceId === item.id ? 'selected' : ''}}"
+              bindtap="onPickVoice" data-id="{{item.id}}">
+              <text class="voice-name">{{item.name}}</text>
+              <view class="voice-extra">
+                <text class="voice-desc">{{item.desc}}</text>
+                <text class="voice-try" catchtap="onTryVoice" data-id="{{item.id}}">试听</text>
+              </view>
+            </view>
+          </view>
+          <view class="set-row">
+            <text class="row-label">语速</text>
+            <slider class="row-slider" min="5" max="20" value="{{settings.speed * 10}}"
+              activeColor="#5B8DEF" block-size="20" bindchange="onSpeedChange" />
+            <text class="row-value">{{settings.speed.toFixed(1)}}x</text>
+          </view>
+          <view class="set-row">
+            <text class="row-label">音调</text>
+            <slider class="row-slider" min="-5" max="5" value="{{settings.pitch}}"
+              activeColor="#5B8DEF" block-size="20" bindchange="onPitchChange" />
+            <text class="row-value">{{settings.pitch > 0 ? '+' : ''}}{{settings.pitch}}</text>
+          </view>
+        </view>
+      </view>
 
-  <view class="group">
-    <view class="group-title">工具设置</view>
-    <view class="cell">高德地图 MCP（TODO）</view>
+      <!-- 组3 工具 -->
+      <view class="group">
+        <text class="group-title">工具设置</text>
+        <view class="group-card card">
+          <view class="set-row">
+            <text class="row-label">高德地图工具</text>
+            <switch checked="{{settings.amapEnabled}}" color="#5B8DEF" bindchange="onAmapToggle" />
+          </view>
+          <view class="set-row col">
+            <text class="row-label">工具白名单</text>
+            <view class="chip-row">
+              <view wx:for="{{toolWhitelist}}" wx:key="*this"
+                class="chip {{settings.whitelist.indexOf(item) > -1 ? 'on' : ''}}"
+                bindtap="onToggleChip" data-name="{{item}}">
+                <text>{{item}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="set-row">
+            <text class="row-label">每次调用前需确认</text>
+            <switch checked="{{settings.confirmTools}}" color="#5B8DEF" bindchange="onConfirmToggle" />
+          </view>
+        </view>
+      </view>
+
+      <!-- 组4 数据 -->
+      <view class="group">
+        <text class="group-title">界面与隐私</text>
+        <view class="group-card card">
+          <view class="set-row" bindtap="pickTheme">
+            <text class="row-label">主题</text>
+            <text class="row-value">{{themeText}}</text>
+            <text class="row-arrow">›</text>
+          </view>
+          <view class="set-row" bindtap="clearHistory">
+            <text class="row-label danger">清空所有会话历史</text>
+            <text class="row-arrow">›</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <view class="btn-ghost reset" bindtap="resetSettings">重置</view>
+    <view class="btn-primary save" bindtap="saveSettings">保存</view>
   </view>
 </view>

@@ -1,0 +1,223 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* 导航栏 */
+.nav-bar {
+  background: var(--nav-bg);
+  position: relative;
+  z-index: 20;
+}
+
+.nav-main {
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32rpx;
+}
+
+.nav-back {
+  width: 88rpx;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  margin-left: -16rpx;
+}
+
+.back-arrow {
+  font-size: 60rpx;
+  color: var(--text);
+  line-height: 1;
+}
+
+.nav-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+  text-align: center;
+}
+
+.nav-filter {
+  font-size: 28rpx;
+  color: var(--text-2);
+  padding: 8rpx 16rpx;
+}
+
+/* 地图区域 */
+.map-area {
+  flex: 1;
+  position: relative;
+  background: var(--map-bg);
+  min-height: 300rpx;
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+}
+
+.map-copy {
+  position: absolute;
+  left: 20rpx;
+  bottom: 16rpx;
+  font-size: 22rpx;
+  color: var(--text-2);
+  background: rgba(0, 0, 0, 0.35);
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+.map-zoom {
+  position: absolute;
+  right: 20rpx;
+  bottom: 16rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.zoom-btn {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 12rpx;
+  background: var(--card-glass);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+}
+
+.zoom-btn text {
+  font-size: 40rpx;
+  color: var(--text);
+  line-height: 1;
+}
+
+/* 结果列表 */
+.poi-panel {
+  background: var(--card-glass);
+  border-radius: 32rpx 32rpx 0 0;
+  height: 46vh;
+  display: flex;
+  flex-direction: column;
+  margin-top: -32rpx;
+  position: relative;
+  z-index: 10;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 32rpx 16rpx;
+}
+
+.panel-title {
+  font-size: 28rpx;
+  color: var(--text);
+}
+
+.panel-arrow {
+  font-size: 28rpx;
+  color: var(--text-2);
+}
+
+.panel-scroll {
+  flex: 1;
+  min-height: 0;
+}
+
+.poi-row {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  border-bottom: 2rpx solid var(--divider);
+}
+
+.poi-row.active {
+  background: rgba(91, 141, 239, 0.08);
+  border-left: 6rpx solid var(--primary);
+}
+
+.poi-icon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background: rgba(91, 141, 239, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.poi-icon-emoji {
+  font-size: 36rpx;
+}
+
+.poi-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.poi-line1,
+.poi-line2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.poi-name {
+  font-size: 32rpx;
+  color: var(--text);
+  flex: 1;
+  margin-right: 16rpx;
+}
+
+.poi-distance {
+  font-size: 26rpx;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.poi-addr {
+  font-size: 24rpx;
+  color: var(--text-2);
+  flex: 1;
+  margin-right: 16rpx;
+  margin-top: 6rpx;
+}
+
+.poi-rating {
+  font-size: 22rpx;
+  color: #FFA940;
+  flex-shrink: 0;
+  margin-top: 6rpx;
+}
+
+/* 底部操作栏 */
+.action-bar {
+  display: flex;
+  gap: 24rpx;
+  padding: 24rpx 32rpx calc(24rpx + var(--safe-bottom));
+  background: var(--bg);
+  border-top: 2rpx solid var(--divider);
+}
+
+.copy-btn {
+  width: 260rpx;
+  height: 88rpx;
+  line-height: 84rpx;
+}
+
+.nav-btn {
+  flex: 1;
+  height: 88rpx;
+  line-height: 88rpx;
+}

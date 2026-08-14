@@ -1,0 +1,281 @@
+<!DOCTYPE html><html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>知行AI - 设置</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#1e0060",
+                        "inverse-on-surface": "#2f3035",
+                        "error-container": "#93000a",
+                        "tertiary-container": "#00a47b",
+                        "on-tertiary-fixed-variant": "#00513b",
+                        "outline": "#8d909e",
+                        "on-background": "#e2e2e8",
+                        "on-tertiary-container": "#003122",
+                        "surface-bright": "#37393e",
+                        "surface-container-lowest": "#0c0e12",
+                        "surface-container": "#1e2024",
+                        "inverse-primary": "#1e5bba",
+                        "on-error-container": "#ffdad6",
+                        "on-error": "#690005",
+                        "on-primary-fixed": "#001a43",
+                        "secondary-container": "#4e24c0",
+                        "primary-fixed-dim": "#aec6ff",
+                        "on-primary-container": "#00275e",
+                        "on-surface-variant": "#c3c6d4",
+                        "secondary-fixed-dim": "#ccbeff",
+                        "surface": "#111317",
+                        "on-surface": "#e2e2e8",
+                        "outline-variant": "#424752",
+                        "on-primary-fixed-variant": "#004397",
+                        "error": "#ffb4ab",
+                        "on-secondary": "#340098",
+                        "primary": "#aec6ff",
+                        "surface-container-high": "#282a2e",
+                        "primary-container": "#5d8ef1",
+                        "on-tertiary-fixed": "#002116",
+                        "primary-fixed": "#d8e2ff",
+                        "background": "#111317",
+                        "tertiary": "#29e0ab",
+                        "surface-dim": "#111317",
+                        "surface-container-low": "#1a1c20",
+                        "tertiary-fixed-dim": "#29e0ab",
+                        "surface-tint": "#aec6ff",
+                        "secondary-fixed": "#e7deff",
+                        "surface-variant": "#333539",
+                        "secondary": "#ccbeff",
+                        "surface-container-highest": "#333539",
+                        "on-secondary-container": "#beadff",
+                        "on-secondary-fixed-variant": "#4c20bd",
+                        "inverse-surface": "#e2e2e8",
+                        "on-primary": "#002e6b",
+                        "tertiary-fixed": "#55fdc6",
+                        "on-tertiary": "#003828",
+                        "card": "#1A1E27",
+                        "danger": "#FF5252",
+                        "primary-blue": "#5B8DEF",
+                        "secondary-text": "#8A8F9C"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "8px",
+                        "stack-lg": "32px",
+                        "gutter": "12px",
+                        "stack-md": "16px",
+                        "container-margin": "20px",
+                        "card-padding": "16px"
+                    },
+                    "fontFamily": {
+                        "display-navigation": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "caption-xs": ["Hanken Grotesk"],
+                        "headline-main": ["Hanken Grotesk"],
+                        "label-sm": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "display-navigation": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["21.3px", { "lineHeight": "32px", "fontWeight": "400" }],
+                        "caption-xs": ["16px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-main": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-sm": ["17.3px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-md": ["18.6px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #0F1115; color: #E8EAF0; }
+        .glass-card { background-color: #1A1E27; border: 1px solid rgba(255,255,255,0.05); }
+        .ios-switch {
+            appearance: none;
+            width: 50px; height: 30px;
+            background: #2C3038; border-radius: 15px;
+            position: relative; cursor: pointer; outline: none;
+            transition: background 0.3s;
+        }
+        .ios-switch::after {
+            content: ''; position: absolute;
+            top: 2px; left: 2px;
+            width: 26px; height: 26px;
+            background: #fff; border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        .ios-switch:checked { background: #5B8DEF; }
+        .ios-switch:checked::after { transform: translateX(20px); }
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%; background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px; width: 20px;
+            border-radius: 50%; background: #ffffff;
+            cursor: pointer; margin-top: -8px;
+            box-shadow: 0 0 4px rgba(0,0,0,0.3);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px;
+            cursor: pointer; background: #5B8DEF;
+            border-radius: 2px;
+        }
+        .custom-range-bg {
+            background: linear-gradient(to right, #5B8DEF 70%, #2C3038 70%);
+        }
+        .separator { border-bottom: 1px solid rgba(255,255,255,0.05); }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col items-center">
+<div class="w-full max-w-[375px] min-h-[812px] bg-[#0F1115] relative overflow-hidden flex flex-col">
+<!-- TopAppBar (Simulated Settings Version) -->
+<header class="w-full flex-none pt-11 px-container-margin h-[88px] flex items-center justify-between z-50 bg-[#0F1115]">
+<button class="text-on-surface hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-[24px]">arrow_back_ios</span>
+</button>
+<h1 class="font-headline-main text-body-md font-bold text-on-surface absolute left-1/2 -translate-x-1/2">设置</h1>
+<div class="w-6"></div> <!-- Spacer -->
+</header>
+<!-- Content Area -->
+<main class="flex-1 overflow-y-auto px-container-margin pb-[120px] space-y-3">
+<!-- Group 1: Model -->
+<section class="glass-card rounded-2xl p-card-padding text-body-md text-on-surface">
+<div class="flex items-center justify-between h-[52px] separator">
+<span>LLM 服务商</span>
+<div class="flex items-center text-secondary-text">
+<span>百炼</span>
+<span class="material-symbols-outlined ml-1 text-[20px]">chevron_right</span>
+</div>
+</div>
+<div class="flex items-center justify-between h-[52px] separator">
+<span>模型名称</span>
+<span class="text-secondary-text">qwen-turbo</span>
+</div>
+<div class="py-4 separator">
+<div class="flex justify-between mb-2">
+<span>Temperature</span>
+<span class="text-primary-blue">0.7</span>
+</div>
+<input class="w-full" max="1" min="0" step="0.1" style="background: linear-gradient(to right, #5B8DEF 70%, #2C3038 70%);" type="range" value="0.7">
+</div>
+<div class="flex items-center justify-between h-[52px]">
+<span>最大 Token 数</span>
+<span class="text-secondary-text">2048</span>
+</div>
+</section>
+<!-- Group 2: Voice -->
+<section class="glass-card rounded-2xl p-card-padding text-body-md text-on-surface">
+<div class="flex items-center justify-between h-[52px] separator">
+<span>TTS 语音回复</span>
+<input checked="" class="ios-switch" type="checkbox">
+</div>
+<div class="py-4 separator">
+<span class="block mb-3">音色选择</span>
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-[#2C3038] border-[1.5px] border-primary-blue rounded-xl p-3 flex justify-between items-center relative overflow-hidden">
+<span class="text-sm font-medium">女声/温柔</span>
+<div class="flex items-center gap-1 text-primary-blue text-xs">
+<span class="material-symbols-outlined text-[16px]">headphones</span>试听
+                            </div>
+<div class="absolute inset-0 bg-primary-blue/10 pointer-events-none"></div>
+</div>
+<div class="bg-[#2C3038] border-[1.5px] border-transparent rounded-xl p-3 flex justify-between items-center text-secondary-text hover:bg-surface-variant transition-colors">
+<span class="text-sm">男声/磁性</span>
+<div class="flex items-center gap-1 text-primary-blue text-xs opacity-80">
+<span class="material-symbols-outlined text-[16px]">headphones</span>试听
+                            </div>
+</div>
+<div class="bg-[#2C3038] border-[1.5px] border-transparent rounded-xl p-3 flex justify-between items-center text-secondary-text hover:bg-surface-variant transition-colors">
+<span class="text-sm">童声</span>
+<div class="flex items-center gap-1 text-primary-blue text-xs opacity-80">
+<span class="material-symbols-outlined text-[16px]">headphones</span>试听
+                            </div>
+</div>
+<div class="bg-[#2C3038] border-[1.5px] border-transparent rounded-xl p-3 flex justify-between items-center text-secondary-text hover:bg-surface-variant transition-colors">
+<span class="text-sm">粤语</span>
+<div class="flex items-center gap-1 text-primary-blue text-xs opacity-80">
+<span class="material-symbols-outlined text-[16px]">headphones</span>试听
+                            </div>
+</div>
+</div>
+</div>
+<div class="py-4 separator">
+<div class="flex justify-between mb-2">
+<span>语速 (Speed)</span>
+<span class="text-primary-blue">1.0</span>
+</div>
+<input class="w-full" max="2.0" min="0.5" step="0.1" style="background: linear-gradient(to right, #5B8DEF 33.3%, #2C3038 33.3%);" type="range" value="1.0">
+</div>
+<div class="py-4">
+<div class="flex justify-between mb-2">
+<span>音调 (Pitch)</span>
+<span class="text-primary-blue">0</span>
+</div>
+<input class="w-full" max="5" min="-5" step="1" style="background: linear-gradient(to right, #5B8DEF 50%, #2C3038 50%);" type="range" value="0">
+</div>
+</section>
+<!-- Group 3: Tools -->
+<section class="glass-card rounded-2xl p-card-padding text-body-md text-on-surface">
+<div class="flex items-center justify-between h-[52px] separator">
+<span>高德地图工具</span>
+<input checked="" class="ios-switch" type="checkbox">
+</div>
+<div class="py-4 separator">
+<span class="block mb-3">工具白名单</span>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1.5 bg-primary-blue text-white text-sm rounded-full">周边搜索</span>
+<span class="px-3 py-1.5 bg-[#2C3038] text-secondary-text text-sm rounded-full">路线规划</span>
+<span class="px-3 py-1.5 bg-primary-blue text-white text-sm rounded-full">天气预报</span>
+<span class="px-3 py-1.5 bg-[#2C3038] text-secondary-text text-sm rounded-full">行政区划</span>
+</div>
+</div>
+<div class="flex items-center justify-between h-[52px]">
+<span>调用前二次确认</span>
+<input class="ios-switch" type="checkbox">
+</div>
+</section>
+<!-- Group 4: Data -->
+<section class="glass-card rounded-2xl p-card-padding flex items-center justify-center h-[52px] cursor-pointer hover:bg-surface-variant transition-colors" id="clearDataBtn">
+<span class="text-danger font-medium">清空所有会话历史</span>
+</section>
+</main>
+<!-- Modal Overlay (Hidden by default, shown for demonstration structure) -->
+<div class="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden" id="confirmationModal">
+<div class="bg-[#232936] w-[300px] rounded-2xl p-6 flex flex-col items-center shadow-2xl border border-white/5">
+<p class="text-on-surface text-center font-medium mb-6">确定清空全部会话历史？<br><span class="text-sm text-secondary-text mt-2 block font-normal">此操作不可恢复</span></p>
+<div class="flex w-full gap-3">
+<button class="flex-1 py-3 rounded-xl bg-[#2C3038] text-on-surface hover:opacity-80 transition-opacity" id="cancelBtn">取消</button>
+<button class="flex-1 py-3 rounded-xl bg-danger text-white hover:opacity-80 transition-opacity">删除</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+        // Simple script to demonstrate modal interaction
+        const clearBtn = document.getElementById('clearDataBtn');
+        const modal = document.getElementById('confirmationModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+
+        clearBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+    </script>
+</body></html>

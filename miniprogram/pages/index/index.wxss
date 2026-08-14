@@ -2,74 +2,224 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background: var(--bg-base);
+  background: var(--bg);
+  color: var(--text);
 }
 
-.nav {
+/* ===== 自定义导航栏 ===== */
+.nav-bar {
+  background: var(--nav-bg);
+  position: relative;
+  z-index: 10;
+}
+
+.nav-main {
+  height: 88rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24rpx 32rpx;
-  padding-top: calc(env(safe-area-inset-top) + 24rpx);
+  padding: 0 32rpx;
+}
+
+.nav-title-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .nav-title {
-  font-size: 34rpx;
+  font-size: 36rpx;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--text);
+  line-height: 1.2;
 }
 
-.nav-icon {
-  width: 64rpx;
-  height: 64rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32rpx;
-  background: var(--bg-glass);
-  border-radius: var(--radius-sm);
+.nav-sub {
+  font-size: 22rpx;
+  color: var(--text-2);
+  margin-top: 2rpx;
 }
 
-.chat {
+/* ===== 断网横幅 ===== */
+.offline-banner {
+  background: var(--danger);
+  padding: 14rpx 32rpx;
+  text-align: center;
+}
+
+.offline-text {
+  color: #FFFFFF;
+  font-size: 26rpx;
+}
+
+/* ===== 消息流 ===== */
+.chat-scroll {
   flex: 1;
-  padding: 24rpx 32rpx;
+  min-height: 0;
+  position: relative;
 }
 
-.chat-empty {
+.chat-inner {
+  padding: 24rpx 32rpx 40rpx;
+}
+
+.tool-row {
+  display: flex;
+  margin-bottom: 36rpx;
+  width: 100%;
+}
+
+.tool-row.right {
+  justify-content: flex-end;
+}
+
+/* ===== 空状态 ===== */
+.empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 40vh;
+  padding-top: 120rpx;
+}
+
+.empty-icon {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  background: rgba(91, 141, 239, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 36rpx;
+}
+
+.empty-mic {
+  width: 56rpx;
+  height: 72rpx;
+  border-radius: 28rpx;
+  border: 6rpx solid var(--primary);
+  opacity: 0.7;
+  position: relative;
+}
+
+.empty-mic::after {
+  content: '';
+  position: absolute;
+  width: 20rpx;
+  height: 14rpx;
+  border: 6rpx solid var(--primary);
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-radius: 0 0 14rpx 14rpx;
+  bottom: -18rpx;
+  left: 50%;
+  margin-left: -16rpx;
 }
 
 .empty-title {
   font-size: 36rpx;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 16rpx;
+  color: var(--text);
+  font-weight: 500;
+  margin-bottom: 12rpx;
 }
 
 .empty-sub {
   font-size: 26rpx;
-  color: var(--text-secondary);
+  color: var(--text-2);
+  margin-bottom: 48rpx;
 }
 
-.input-bar {
-  padding: 24rpx 32rpx;
-  padding-bottom: calc(env(safe-area-inset-bottom) + 24rpx);
+.suggest-list {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 20rpx;
+  width: 100%;
 }
 
-.mic-btn {
-  width: 128rpx;
-  height: 128rpx;
-  border-radius: 50%;
-  background: var(--bg-glass);
-  border: 1rpx solid var(--border-default);
-  box-shadow: var(--shadow-glow);
+.suggest {
+  background: var(--card-glass);
+  border-radius: 24rpx;
+  padding: 24rpx 28rpx;
+  border: 2rpx solid var(--bubble-ai-border);
+}
+
+.suggest text {
+  font-size: 28rpx;
+  color: var(--text-2);
+}
+
+/* ===== 底部输入栏 ===== */
+.input-bar {
+  background: var(--bg);
+  border-top: 2rpx solid var(--divider);
+  padding-bottom: var(--safe-bottom);
+}
+
+/* 文字输入 */
+.text-input-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 24rpx 32rpx 8rpx;
+}
+
+.text-input {
+  flex: 1;
+  background: var(--input-bg);
+  border-radius: 40rpx;
+  padding: 20rpx 32rpx;
+  font-size: 30rpx;
+  color: var(--text);
+  border: 2rpx solid var(--btn-border);
+}
+
+.input-placeholder {
+  color: var(--text-2);
+}
+
+.send-btn {
+  width: 120rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  background: var(--input-bg);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 48rpx;
+  opacity: 0.5;
+  border: 2rpx solid var(--btn-border);
+}
+
+.send-btn.active {
+  background: var(--primary);
+  opacity: 1;
+}
+
+.send-btn text {
+  font-size: 28rpx;
+  color: var(--text);
+}
+
+.send-btn.active text {
+  color: #FFFFFF;
+}
+
+/* 底部工具行 */
+.input-tools {
+  display: flex;
+  justify-content: space-between;
+  padding: 16rpx 48rpx 24rpx;
+}
+
+.tool-icon-btn {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.55;
+}
+
+.ti {
+  font-size: 44rpx;
+  line-height: 1;
 }

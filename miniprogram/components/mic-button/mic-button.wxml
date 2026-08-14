@@ -1,0 +1,43 @@
+<view class="mic-wrap {{status}}" bindtouchstart="_touchStart" bindtouchmove="_touchMove"
+  bindtouchend="_touchEnd" bindtouchcancel="_touchCancel">
+
+  <!-- 录音中：扩散波纹 -->
+  <view wx:if="{{status === 'recording'}}" class="ripple">
+    <view class="ripple-item r1"></view>
+    <view class="ripple-item r2"></view>
+    <view class="ripple-item r3"></view>
+  </view>
+
+  <!-- 录音中：音量柱 -->
+  <view wx:if="{{status === 'recording'}}" class="vbar-row">
+    <view wx:for="{{bars}}" wx:key="index" class="vbar" style="height: {{item * 72}}rpx;"></view>
+  </view>
+
+  <!-- 中心按钮 -->
+  <view class="mic-btn {{status}}">
+    <view class="mic-icon {{status}}">
+      <!-- 麦克风图形：圆角矩形 + 支架 -->
+      <view class="mic-body"></view>
+      <view class="mic-arc"></view>
+      <!-- 识别中：旋转圆环 -->
+      <view wx:if="{{status === 'recognizing'}}" class="spinner-ring"></view>
+      <view wx:if="{{status === 'recognizing'}}" class="spinner-mask"></view>
+    </view>
+  </view>
+
+  <!-- 状态文字 -->
+  <view class="status-line">
+    <block wx:if="{{status === 'idle'}}"><text class="status-text">按住说话</text></block>
+    <block wx:elif="{{status === 'pressing'}}"><text class="status-text">松开发送</text></block>
+    <block wx:elif="{{status === 'recording'}}">
+      <text class="status-text status-recording">{{durationText}} · 正在聆听…</text>
+      <text class="cancel-hint">上滑取消发送</text>
+    </block>
+    <block wx:elif="{{status === 'recognizing'}}"><text class="status-text">识别中…</text></block>
+    <block wx:elif="{{status === 'failed'}}"><text class="status-text status-danger">未识别，请重试</text></block>
+    <block wx:elif="{{status === 'denied'}}">
+      <text class="status-text">需要麦克风权限</text>
+      <text class="go-open" catchtap="_goOpen">去开启</text>
+    </block>
+  </view>
+</view>

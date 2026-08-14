@@ -1,0 +1,67 @@
+<view class="page theme-{{theme}}">
+  <!-- 自定义导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-status" style="height: {{statusBarHeight}}px;"></view>
+    <view class="nav-main">
+      <view class="nav-back" bindtap="goBack">
+        <text class="back-arrow">‹</text>
+      </view>
+      <text class="nav-title">附近结果</text>
+      <view class="nav-filter" bindtap="onFilter">
+        <text>筛选</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 地图区域 -->
+  <view class="map-area">
+    <map
+      class="map"
+      latitude="{{center.latitude}}"
+      longitude="{{center.longitude}}"
+      markers="{{markers}}"
+      scale="13"
+      show-location
+      enable-zoom
+      bindmarkertap="onMarkerTap"
+    ></map>
+    <view class="map-copy">© 高德地图</view>
+    <view class="map-zoom">
+      <view class="zoom-btn" bindtap="zoomIn"><text>＋</text></view>
+      <view class="zoom-btn" bindtap="zoomOut"><text>－</text></view>
+    </view>
+  </view>
+
+  <!-- 结果列表（半屏） -->
+  <view class="poi-panel">
+    <view class="panel-head">
+      <text class="panel-title">{{poiList.length}} 个结果 · 按距离排序</text>
+      <text class="panel-arrow">⌄</text>
+    </view>
+    <scroll-view class="panel-scroll" scroll-y>
+      <view wx:for="{{poiList}}" wx:key="id"
+        class="poi-row {{activeId === item.id ? 'active' : ''}}"
+        bindtap="onPickPoi" data-id="{{item.id}}">
+        <view class="poi-icon">
+          <text class="poi-icon-emoji">☕</text>
+        </view>
+        <view class="poi-info">
+          <view class="poi-line1">
+            <text class="poi-name ellipsis">{{item.name}}</text>
+            <text class="poi-distance">{{item.distanceText}}</text>
+          </view>
+          <view class="poi-line2">
+            <text class="poi-addr ellipsis">{{item.address}}</text>
+            <text class="poi-rating">{{item.ratingText}}</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="action-bar">
+    <view class="btn-ghost copy-btn" bindtap="copyAddress">复制地址</view>
+    <view class="btn-primary nav-btn" bindtap="openNav">用地图导航</view>
+  </view>
+</view>

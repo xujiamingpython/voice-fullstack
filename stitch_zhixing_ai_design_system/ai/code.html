@@ -1,0 +1,157 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知行AI语音导航 设计系统规范</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #FFFFFF;
+            color: #0F1115;
+            margin: 0;
+            padding: 60px;
+        }
+        .section-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #8A8F9C;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 32px;
+            border-bottom: 1px solid #E8EAF0;
+            padding-bottom: 8px;
+        }
+        .color-card {
+            width: 100%;
+            height: 80px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+    </style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" data-snapdom="injected-import"></head>
+<body>
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-16">
+            <h1 class="text-3xl font-bold mb-2">知行AI语音导航</h1>
+            <p class="text-gray-400 text-sm">DESIGN SYSTEM SPECIFICATION V1.0</p>
+        </header>
+
+        <!-- 区域一：色板 -->
+        <section class="mb-20">
+            <h2 class="section-title">区域一：色板 / COLOR PALETTE</h2>
+            <div class="grid grid-cols-8 gap-4">
+                <div class="text-center">
+                    <div class="color-card" style="background-color: #0F1115;"></div>
+                    <p class="text-xs font-medium text-gray-900">深空黑</p>
+                    <p class="text-[10px] text-gray-400">#0F1115</p>
+                </div>
+                <div class="text-center">
+                    <div class="color-card" style="background-color: #1A1E27;"></div>
+                    <p class="text-xs font-medium text-gray-900">卡片深灰</p>
+                    <p class="text-[10px] text-gray-400">#1A1E27</p>
+                </div>
+                <div class="text-center">
+                    <div class="color-card" style="background-color: #5B8DEF;"></div>
+                    <p class="text-xs font-medium text-gray-900">科技蓝</p>
+                    <p class="text-[10px] text-gray-400">#5B8DEF</p>
+                </div>
+                <div class="text-center">
+                    <div class="color-card" style="background-color: #7C5BEF;"></div>
+                    <p class="text-xs font-medium text-gray-900">强调紫</p>
+                    <p class="text-[10px] text-gray-400">#7C5BEF</p>
+                </div>
+                <div class="text-center">
+                    <div class="color-card" style="background-color: #00D4A0;"></div>
+                    <p class="text-xs font-medium text-gray-900">成功青</p>
+                    <p class="text-[10px] text-gray-400">#00D4A0</p>
+                </div>
+                <div class="text-center">
+                    <div class="color-card" style="background-color: #FF5252;"></div>
+                    <p class="text-xs font-medium text-gray-900">危险红</p>
+                    <p class="text-[10px] text-gray-400">#FF5252</p>
+                </div>
+                <div class="text-center">
+                    <div class="color-card" style="background-color: #E8EAF0;"></div>
+                    <p class="text-xs font-medium text-gray-900">主文字</p>
+                    <p class="text-[10px] text-gray-400">#E8EAF0</p>
+                </div>
+                <div class="text-center">
+                    <div class="color-card" style="background-color: #8A8F9C;"></div>
+                    <p class="text-xs font-medium text-gray-900">次要文字</p>
+                    <p class="text-[10px] text-gray-400">#8A8F9C</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 区域二：字体层级 -->
+        <section class="mb-20">
+            <h2 class="section-title">区域二：字体层级 / TYPOGRAPHY</h2>
+            <div class="space-y-8">
+                <div class="flex items-baseline">
+                    <div class="w-48 flex-shrink-0">
+                        <p class="text-[10px] text-gray-400 uppercase">标题 18pt 中粗</p>
+                        <p class="text-xs text-gray-500">用于页面标题</p>
+                    </div>
+                    <p style="font-size: 18pt; font-weight: 500;">知行AI语音导航 - 页面标题示例</p>
+                </div>
+                <div class="flex items-baseline">
+                    <div class="w-48 flex-shrink-0">
+                        <p class="text-[10px] text-gray-400 uppercase">正文 16pt 常规</p>
+                        <p class="text-xs text-gray-500">用于消息与正文</p>
+                    </div>
+                    <p style="font-size: 16pt; font-weight: 400;">你好，我是知行AI，请问有什么可以帮您的？</p>
+                </div>
+                <div class="flex items-baseline">
+                    <div class="w-48 flex-shrink-0">
+                        <p class="text-[10px] text-gray-400 uppercase">辅助文字 13pt</p>
+                        <p class="text-xs text-gray-500">用于说明与时间</p>
+                    </div>
+                    <p style="font-size: 13pt; color: #8A8F9C;">下午 14:30 · 已通过语音识别</p>
+                </div>
+                <div class="flex items-baseline">
+                    <div class="w-48 flex-shrink-0">
+                        <p class="text-[10px] text-gray-400 uppercase">标签 12pt</p>
+                        <p class="text-xs text-gray-500">用于按钮与角标</p>
+                    </div>
+                    <p style="font-size: 12pt; font-weight: 500;">确认完成</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 区域三：基础组件 -->
+        <section>
+            <h2 class="section-title">区域三：基础组件 / COMPONENTS</h2>
+            <div class="grid grid-cols-4 gap-8 items-end">
+                <!-- 主按钮 -->
+                <div class="space-y-4">
+                    <p class="text-[10px] text-gray-400 uppercase">① 主按钮</p>
+                    <button style="background-color: #5B8DEF; color: #FFFFFF; height: 44pt; border-radius: 12pt; font-size: 12pt;" class="w-full font-medium">开始对话</button>
+                </div>
+                <!-- 次级按钮 -->
+                <div class="space-y-4">
+                    <p class="text-[10px] text-gray-400 uppercase">② 次级按钮</p>
+                    <button style="background-color: transparent; border: 1px solid #5B8DEF; color: #5B8DEF; height: 44pt; border-radius: 12pt; font-size: 12pt;" class="w-full font-medium">取消</button>
+                </div>
+                <!-- 输入框 -->
+                <div class="space-y-4">
+                    <p class="text-[10px] text-gray-400 uppercase">③ 输入框</p>
+                    <div style="background-color: #1A1E27; border-radius: 12pt; height: 44pt;" class="w-full flex items-center px-4">
+                        <span style="color: #8A8F9C; font-size: 14pt;">输入你的问题…</span>
+                    </div>
+                </div>
+                <!-- 开关 -->
+                <div class="space-y-4">
+                    <p class="text-[10px] text-gray-400 uppercase">④ 开关</p>
+                    <div class="flex items-center">
+                        <div style="background-color: #5B8DEF; width: 51px; height: 31px; border-radius: 15.5px;" class="relative">
+                            <div style="background-color: #FFFFFF; width: 27px; height: 27px; border-radius: 13.5px; top: 2px; right: 2px;" class="absolute shadow-sm"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+</body></html>

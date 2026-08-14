@@ -1,0 +1,319 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>知行AI语音导航 - Light Mode Main Chat</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed": "#001a43",
+                    "outline-variant": "#c3c6d4",
+                    "on-tertiary-fixed": "#2a1700",
+                    "tertiary": "#825100",
+                    "secondary-fixed-dim": "#ccbeff",
+                    "primary": "#1a58b7",
+                    "on-primary-container": "#fefcff",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed": "#1e0060",
+                    "on-secondary-fixed-variant": "#4c20bd",
+                    "on-primary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "surface-container-high": "#e6e8f2",
+                    "on-tertiary-container": "#fffbff",
+                    "surface-bright": "#f9f9ff",
+                    "tertiary-fixed-dim": "#ffb960",
+                    "surface-container-low": "#f2f3fd",
+                    "surface": "#f9f9ff",
+                    "on-surface-variant": "#424752",
+                    "surface-container-highest": "#e0e2ec",
+                    "inverse-on-surface": "#eff0fa",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "primary-fixed-dim": "#aec6ff",
+                    "on-error-container": "#93000a",
+                    "on-surface": "#191c22",
+                    "surface-dim": "#d8d9e3",
+                    "surface-container": "#ecedf7",
+                    "tertiary-container": "#a46700",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-container": "#3d72d2",
+                    "inverse-primary": "#aec6ff",
+                    "secondary-container": "#7b5aee",
+                    "on-error": "#ffffff",
+                    "on-secondary-container": "#fffbff",
+                    "outline": "#737784",
+                    "secondary-fixed": "#e7deff",
+                    "secondary": "#623dd3",
+                    "primary-fixed": "#d8e2ff",
+                    "surface-tint": "#1e5bba",
+                    "on-primary-fixed-variant": "#004397",
+                    "tertiary-fixed": "#ffddb8",
+                    "surface-variant": "#e0e2ec",
+                    "background": "#f9f9ff",
+                    "on-background": "#191c22",
+                    "inverse-surface": "#2d3038"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-md": "16px",
+                    "margin-mobile": "16px",
+                    "padding-card": "16px",
+                    "gutter-mobile": "12px",
+                    "stack-lg": "24px",
+                    "unit": "4px",
+                    "stack-sm": "8px"
+            },
+            "fontFamily": {
+                    "label-lg": [
+                            "Hanken Grotesk"
+                    ],
+                    "headline-lg": [
+                            "Hanken Grotesk"
+                    ],
+                    "body-lg": [
+                            "Hanken Grotesk"
+                    ],
+                    "label-md": [
+                            "Hanken Grotesk"
+                    ],
+                    "body-md": [
+                            "Hanken Grotesk"
+                    ],
+                    "headline-md": [
+                            "Hanken Grotesk"
+                    ],
+                    "headline-lg-mobile": [
+                            "Hanken Grotesk"
+                    ],
+                    "display-lg": [
+                            "Hanken Grotesk"
+                    ]
+            },
+            "fontSize": {
+                    "label-lg": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "letterSpacing": "0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-lg": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-lg": [
+                            "17px",
+                            {
+                                    "lineHeight": "26px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-md": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "body-md": [
+                            "15px",
+                            {
+                                    "lineHeight": "22px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-md": [
+                            "20px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-lg-mobile": [
+                            "22px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "display-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+        .thinking-dot {
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .thinking-dot:nth-child(1) { animation-delay: -0.32s; }
+        .thinking-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[#F7F8FA] w-full h-screen overflow-hidden flex flex-col mx-auto relative antialiased" style="max-width: 375px; max-height: 812px;">
+<!-- Status Bar (Simulated) -->
+<div class="w-full h-[44px] flex justify-between items-center px-[16px] text-on-surface z-50 flex-shrink-0 bg-transparent">
+<div class="font-label-lg text-[15px] font-semibold tracking-tight">9:41</div>
+<div class="flex items-center gap-[4px]">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">wifi</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">battery_full</span>
+</div>
+</div>
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-margin-mobile h-12 w-full flex-shrink-0 z-[1000] bg-surface/80 backdrop-blur-md">
+<div class="flex items-center gap-2 text-primary dark:text-primary-fixed hover:opacity-80 transition-transform scale-95">
+<span class="material-symbols-outlined" data-icon="waves" data-weight="fill">waves</span>
+</div>
+<div class="flex flex-col items-center justify-center absolute left-1/2 -translate-x-1/2">
+<h1 class="font-headline-md text-headline-md-mobile font-bold text-on-surface dark:text-surface">知行AI语音导航</h1>
+<span class="font-label-md text-[13px] text-on-surface-variant font-normal">AI 语音导航助手</span>
+</div>
+<div class="w-[87px] h-[32px] rounded-full border border-[#E5E8EF] flex items-center justify-center bg-white/50 backdrop-blur-sm shadow-[0_4px_12px_rgba(26,29,36,0.05)] opacity-0">
+<!-- Simulated Mini Program Capsule Area -->
+</div>
+</header>
+<!-- Chat Stream Canvas -->
+<main class="flex-1 overflow-y-auto no-scrollbar px-margin-mobile pt-stack-lg pb-[120px] flex flex-col gap-stack-lg z-10 w-full relative">
+<!-- Welcome Message / AI -->
+<div class="flex items-start gap-[12px] w-full max-w-full">
+<div class="w-[40px] h-[40px] rounded-full bg-primary flex-shrink-0 flex items-center justify-center shadow-[0_4px_12px_rgba(26,29,36,0.05)]">
+<span class="material-symbols-outlined text-white text-[24px]" style="font-variation-settings: 'FILL' 1;">waves</span>
+</div>
+<div class="flex flex-col gap-[8px] max-w-[80%]">
+<div class="bg-white border border-[#E5E8EF] rounded-[16px] rounded-tl-none p-[16px] shadow-[0_4px_12px_rgba(26,29,36,0.05)]">
+<p class="font-body-md text-on-surface">你好，我是知行。按住下方按钮说话，或直接输入文字，我可以帮你查天气、找地点、规划路线。</p>
+</div>
+<!-- Action Links -->
+<div class="flex items-center gap-[12px] px-[4px]">
+<button class="font-label-md text-on-surface-variant hover:text-primary transition-colors flex items-center gap-[2px]">
+<span class="material-symbols-outlined text-[14px]">content_copy</span>
+                        复制
+                    </button>
+<div class="w-[1px] h-[10px] bg-outline-variant"></div>
+<button class="font-label-md text-on-surface-variant hover:text-primary transition-colors flex items-center gap-[2px]">
+<span class="material-symbols-outlined text-[14px]">refresh</span>
+                        重新生成
+                    </button>
+<div class="w-[1px] h-[10px] bg-outline-variant"></div>
+<button class="font-label-md text-primary hover:text-primary-container transition-colors flex items-center gap-[2px]">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                        播放语音
+                    </button>
+</div>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex items-start justify-end gap-[12px] w-full max-w-full">
+<div class="flex flex-col items-end gap-[8px] max-w-[80%]">
+<div class="bg-gradient-to-br from-[#5B8DEF] to-[#7C5BEF] rounded-[16px] rounded-tr-none p-[16px] shadow-[0_4px_12px_rgba(26,29,36,0.05)] text-white font-body-md">
+                    今天北京天气怎么样？
+                </div>
+</div>
+</div>
+<!-- AI Thinking -->
+<div class="flex items-start gap-[12px] w-full max-w-full">
+<div class="w-[40px] h-[40px] rounded-full bg-primary flex-shrink-0 flex items-center justify-center shadow-[0_4px_12px_rgba(26,29,36,0.05)]">
+<span class="material-symbols-outlined text-white text-[24px]" style="font-variation-settings: 'FILL' 1;">waves</span>
+</div>
+<div class="flex flex-col gap-[8px] max-w-[80%]">
+<div class="bg-white border border-[#E5E8EF] rounded-[16px] rounded-tl-none p-[16px] py-[12px] shadow-[0_4px_12px_rgba(26,29,36,0.05)] flex items-center gap-[8px]">
+<div class="flex space-x-1">
+<div class="w-2 h-2 bg-primary/60 rounded-full thinking-dot"></div>
+<div class="w-2 h-2 bg-primary/60 rounded-full thinking-dot"></div>
+<div class="w-2 h-2 bg-primary/60 rounded-full thinking-dot"></div>
+</div>
+<span class="font-body-md text-on-surface-variant text-[14px]">正在思考…</span>
+</div>
+</div>
+</div>
+<!-- AI Response -->
+<div class="flex items-start gap-[12px] w-full max-w-full">
+<div class="w-[40px] h-[40px] rounded-full bg-primary flex-shrink-0 flex items-center justify-center shadow-[0_4px_12px_rgba(26,29,36,0.05)]">
+<span class="material-symbols-outlined text-white text-[24px]" style="font-variation-settings: 'FILL' 1;">waves</span>
+</div>
+<div class="flex flex-col gap-[8px] max-w-[80%]">
+<div class="bg-white border border-[#E5E8EF] rounded-[16px] rounded-tl-none p-[16px] shadow-[0_4px_12px_rgba(26,29,36,0.05)] border-t-2 border-t-secondary">
+<p class="font-body-md text-on-surface">北京今天晴，气温 22~31℃，东南风 2 级，空气质量优，适合出行。</p>
+</div>
+<!-- Action Links -->
+<div class="flex items-center gap-[12px] px-[4px]">
+<button class="font-label-md text-on-surface-variant hover:text-primary transition-colors flex items-center gap-[2px]">
+<span class="material-symbols-outlined text-[14px]">content_copy</span>
+                        复制
+                    </button>
+<div class="w-[1px] h-[10px] bg-outline-variant"></div>
+<button class="font-label-md text-on-surface-variant hover:text-primary transition-colors flex items-center gap-[2px]">
+<span class="material-symbols-outlined text-[14px]">refresh</span>
+                        重新生成
+                    </button>
+<div class="w-[1px] h-[10px] bg-outline-variant"></div>
+<button class="font-label-md text-primary hover:text-primary-container transition-colors flex items-center gap-[2px]">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                        播放语音
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Bottom Recording Bar) -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-margin-mobile pb-[32px] pt-[16px] h-[100px] bg-[#F7F8FA]/90 backdrop-blur-lg border-t border-[#E5E8EF] shadow-[0_-4px_12px_rgba(26,29,36,0.05)] rounded-t-[24px]">
+<!-- Left: Keyboard -->
+<button class="flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors w-[40px] h-[40px] rounded-full">
+<span class="material-symbols-outlined text-[24px]" data-icon="keyboard_alt">keyboard_alt</span>
+</button>
+<!-- Center: Microphone (Active/FAB style) -->
+<button class="flex items-center justify-center bg-white/80 backdrop-blur-md border border-[#E5E8EF] rounded-full w-[64px] h-[64px] shadow-[0_4px_16px_rgba(26,88,183,0.15)] relative overflow-hidden group hover:scale-95 transition-transform duration-200">
+<!-- Glow effect -->
+<div class="absolute inset-0 bg-primary/10 rounded-full blur-md opacity-50 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-primary text-[32px] relative z-10" data-icon="mic_none">mic_none</span>
+</button>
+<!-- Right: History -->
+<button class="flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors w-[40px] h-[40px] rounded-full">
+<span class="material-symbols-outlined text-[24px]" data-icon="history">history</span>
+</button>
+</nav>
+</body></html>
