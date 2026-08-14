@@ -6,18 +6,24 @@
 
 ## [Unreleased]
 
-### ✨ 新增（规划中）
-- ASR 语音识别（阿里云智能语音）
+### ✨ 新增（规划中，待文档评审后开发）
+- ASR 语音识别（阿里云智能语音，微信 RecorderManager 录音上传）
 - LLM 对话（阿里云百炼 Qwen / Deepseek）
-- MCP 工具调用（高德地图）
-- TTS 语音输出（阿里云智能语音）
+- MCP 工具调用（高德地图）+ 小程序 map 组件展示
+- TTS 语音输出（InnerAudioContext 边说边播）
 - 流式响应（WebSocket）
-- 会话历史
-- 设置面板
+- 会话历史（游客模式本地存储）
+- 设置页
 
-### 🏗️ 项目脚手架（本次提交）
-- FastAPI 后端骨架（health / asr / tts / ws/chat 路由）
-- 原生前端骨架（录音 / 播放 / 聊天 UI / 设置）
-- Docker + Nginx 部署配置
+### 🔄 技术栈调整（v0.2.0）
+- **前端：Web → 原生微信小程序**（miniprogram/，游客模式无登录）
+- 5 份项目文档全面更新为小程序版（docs/）
+- 后端收敛为基础骨架（仅 health），业务路由待评审后开发
+- CI：frontend-check → miniprogram-check（JS 语法检查）
+
+### 🏗️ 项目脚手架（v0.1.0 初始提交）
+- FastAPI 后端骨架
+- 微信小程序骨架（app 入口 + 游客 session_id + 页面占位）
+- Docker + Nginx 部署配置（API 反代 + WSS）
 - GitHub Actions CI
 - 5 份项目文档

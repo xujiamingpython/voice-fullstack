@@ -1,0 +1,42 @@
+/**
+ * 全局样式 —— 设计 Token（与 docs/04-页面设计Prompt.md 保持一致）
+ */
+page {
+  /* 主色 */
+  --color-primary: #5B8DEF;
+  --color-primary-dark: #4070D4;
+  --color-accent: #7C5BEF;
+  --color-success: #00D4A0;
+  --color-warning: #FFB547;
+  --color-danger: #FF5252;
+
+  /* 文字 */
+  --text-primary: #E8EAF0;
+  --text-secondary: #8A8F9C;
+  --text-tertiary: #5A5F6C;
+
+  /* 背景 */
+  --bg-base: #0F1115;
+  --bg-elevated: rgba(255, 255, 255, 0.04);
+  --bg-glass: rgba(255, 255, 255, 0.08);
+
+  /* 边框 / 阴影 */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-default: rgba(255, 255, 255, 0.12);
+  --shadow-sm: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 8rpx 32rpx rgba(91, 141, 239, 0.12);
+
+  /* 圆角 */
+  --radius-sm: 16rpx;
+  --radius-md: 24rpx;
+  --radius-lg: 32rpx;
+  --radius-xl: 40rpx;
+
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+  font-size: 28rpx;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: var(--bg-base);
+  box-sizing: border-box;
+}

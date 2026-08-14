@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 本地一键启动：后端 + 前端
+# 本地一键启动：后端（小程序侧用微信开发者工具运行 miniprogram/）
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -17,15 +17,12 @@ echo "🚀 启动后端 (FastAPI)…"
 (cd backend && source .venv/bin/activate 2>/dev/null && uvicorn app.main:app --reload --port 8000) &
 BACKEND_PID=$!
 
-echo "🚀 启动前端 (静态服务器)…"
-(cd frontend && python3 -m http.server 8080) &
-FRONTEND_PID=$!
-
-trap "kill $BACKEND_PID $FRONTEND_PID 2>/dev/null" EXIT
+trap "kill $BACKEND_PID 2>/dev/null" EXIT
 
 echo ""
 echo "✅ 后端:  http://localhost:8000/api/health"
-echo "✅ 前端:  http://localhost:8080"
+echo "✅ 小程序: 用微信开发者工具导入 miniprogram/ 目录运行"
+echo "   （开发期在 详情→本地设置 勾选「不校验合法域名」）"
 echo "按 Ctrl+C 停止"
 
 wait

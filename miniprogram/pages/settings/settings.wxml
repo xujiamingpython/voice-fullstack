@@ -1,0 +1,25 @@
+<!-- 设置页（骨架占位，业务实现待文档确认后开发） -->
+<view class="page">
+  <view class="nav">
+    <view class="nav-back" bindtap="goBack">‹</view>
+    <view class="nav-title">设置</view>
+    <view class="nav-placeholder" />
+  </view>
+
+  <view class="group">
+    <view class="group-title">模型设置</view>
+    <view class="cell">LLM 厂商（TODO）</view>
+    <view class="cell">模型名称（TODO）</view>
+  </view>
+
+  <view class="group">
+    <view class="group-title">语音设置</view>
+    <view class="cell">TTS 开关（TODO）</view>
+    <view class="cell">TTS 音色（TODO）</view>
+  </view>
+
+  <view class="group">
+    <view class="group-title">工具设置</view>
+    <view class="cell">高德地图 MCP（TODO）</view>
+  </view>
+</view>

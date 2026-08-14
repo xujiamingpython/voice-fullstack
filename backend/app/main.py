@@ -1,6 +1,9 @@
 """FastAPI 应用入口。
 
 启动: uvicorn app.main:app --reload --port 8000
+
+当前为「基础骨架」阶段：仅挂载健康检查。
+业务路由（asr / tts / chat）在需求文档与 UI 设计评审确认后开发（见 docs/）。
 """
 import logging
 from contextlib import asynccontextmanager
@@ -8,7 +11,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import asr, chat, health, tts
+from app.api import health
 from app.common.logger import setup_logging
 
 setup_logging()
@@ -24,8 +27,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Voice Full-Stack API",
-    description="ASR + LLM + MCP + TTS 全链路语音助手后端",
-    version="0.1.0",
+    description="ASR + LLM + MCP + TTS 全链路语音助手后端（微信小程序端）",
+    version="0.2.0",
     lifespan=lifespan,
 )
 
@@ -38,8 +41,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 路由注册
+# 路由注册（业务路由待文档评审后开发）
 app.include_router(health.router, prefix="/api", tags=["health"])
-app.include_router(asr.router, prefix="/api", tags=["asr"])
-app.include_router(tts.router, prefix="/api", tags=["tts"])
-app.include_router(chat.router, prefix="/api", tags=["chat"])

@@ -24,6 +24,11 @@ build/
 .npm/
 .eslintcache
 
+# ============ 微信小程序 ============
+miniprogram/project.private.config.json   # 开发者工具私有配置
+miniprogram/miniprogram_npm/              # npm 构建产物
+# 注：project.config.json（公共配置）建议提交
+
 # ============ 环境变量 / 密钥 ============
 .env
 .env.local
@@ -36,6 +41,7 @@ config/local.json
 *.mp3
 *.wav
 *.pcm
+*.aac
 *.opus
 *.webm
 uploads/
