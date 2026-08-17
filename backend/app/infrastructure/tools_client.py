@@ -157,16 +157,31 @@ class AmapToolsClient:
         keyword = args.get("keyword", "")
         location = args.get("location")
         radius = args.get("radius", 3000)
-        city = args.get("city", "")
+        city = args.get("city", config.DEFAULT_CITY)
         if not self.available:
             return self._mock_search(keyword, city)
         http = await self._get_http()
-        params = {"key": self.api_key, "keywords": keyword, "radius": radius, "offset": 10, "page": 1}
+        # 有坐标 → 周边搜索（place/around）；无坐标 → 关键词搜索（place/text）
         if location:
-            params["location"] = location
+            endpoint = f"{config.AMAP_BASE_URL}/place/around"
+            params = {"key": self.api_key, "keywords": keyword, "location": location, "radius": radius, "offset": 10, "page": 1}
+        else:
+            # 无坐标时先用 geocode 取城市中心点
+            if city:
+                try:
+                    geo = await self._geocode({"address": city})
+                    location = f"{geo['location']['longitude']},{geo['location']['latitude']}"
+                except Exception:
+                    pass
+            if location:
+                endpoint = f"{config.AMAP_BASE_URL}/place/around"
+                params = {"key": self.api_key, "keywords": keyword, "location": location, "radius": radius, "offset": 10, "page": 1}
+            else:
+                endpoint = f"{config.AMAP_BASE_URL}/place/text"
+                params = {"key": self.api_key, "keywords": keyword, "city": city, "city_limit": "true", "offset": 10, "page": 1}
         if city:
             params["city"] = city
-        r = await http.get(f"{config.AMAP_BASE_URL}/place/around", params=params)
+        r = await http.get(endpoint, params=params)
         data = r.json()
         if data.get("status") != "1":
             raise RuntimeError(data.get("info", "search failed"))

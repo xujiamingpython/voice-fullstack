@@ -25,7 +25,7 @@ DEEPSEEK_BASE_URL = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com/v1"
 # 统一使用 ALIYUN_BAILIAN_API_KEY；如需独立语音服务 token 可分别配置以下两项
 ALIYUN_ASR_TOKEN = os.getenv("ALIYUN_ASR_TOKEN", "")
 ALIYUN_TTS_TOKEN = os.getenv("ALIYUN_TTS_TOKEN", "")
-ALIYUN_ASR_MODEL = os.getenv("ALIYUN_ASR_MODEL", "paraformer-v2")
+ALIYUN_ASR_MODEL = os.getenv("ALIYUN_ASR_MODEL", "paraformer-realtime-v2")
 ALIYUN_TTS_MODEL = os.getenv("ALIYUN_TTS_MODEL", "sambert-zhichu-v1")
 ALIYUN_TTS_VOICE = os.getenv("ALIYUN_TTS_VOICE", "ailiao")  # 默认音色
 TTS_VOICE_MAP = {  # 前端音色 → 模型/音色

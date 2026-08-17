@@ -52,7 +52,17 @@ class LLMClient:
         max_tokens: int = 2048,
     ) -> AsyncIterator[LLMChunk]:
         """流式调用，产出文本增量与工具调用。"""
-        kwargs = dict(model=self.model, messages=messages, temperature=temperature, max_tokens=max_tokens, stream=True)
+        # Message 对象 → dict（OpenAI SDK 需要 dict 格式）
+        msgs = []
+        for m in messages:
+            if hasattr(m, "to_dict"):
+                msgs.append(m.to_dict())
+            elif isinstance(m, dict):
+                msgs.append(m)
+            else:
+                msgs.append({"role": getattr(m, "role", "user"), "content": getattr(m, "content", "")})
+
+        kwargs = dict(model=self.model, messages=msgs, temperature=temperature, max_tokens=max_tokens, stream=True)
         if tools:
             kwargs["tools"] = tools
             kwargs["tool_choice"] = "auto"
@@ -98,9 +108,17 @@ class LLMClient:
 
     async def chat(self, messages: list, temperature: float = 0.7, max_tokens: int = 2048) -> str:
         """一次性同步对话（无流式）。"""
+        msgs = []
+        for m in messages:
+            if hasattr(m, "to_dict"):
+                msgs.append(m.to_dict())
+            elif isinstance(m, dict):
+                msgs.append(m)
+            else:
+                msgs.append({"role": getattr(m, "role", "user"), "content": getattr(m, "content", "")})
         resp = await self._get_client().chat.completions.create(
             model=self.model,
-            messages=messages,
+            messages=msgs,
             temperature=temperature,
             max_tokens=max_tokens,
         )

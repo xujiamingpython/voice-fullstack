@@ -12,6 +12,15 @@
     /ws/chat            WebSocket 流式对话（主通道）
     /api/sessions/*     会话历史查询/删除
 """
+import os
+
+# 修复 macOS 系统 Python SSL 证书验证失败（dashscope/httpx 共用）
+try:
+    import certifi
+    os.environ.setdefault("SSL_CERT_FILE", certifi.where())
+except ImportError:
+    pass
+
 import logging
 from contextlib import asynccontextmanager
 
