@@ -3,90 +3,61 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 340rpx;
+  height: 140rpx;
   position: relative;
   z-index: 10;
   user-select: none;
   -webkit-user-select: none;
 }
 
-/* 玻璃覆盖层：录音态显示，全屏毛玻璃，不抢触摸 */
-.rec-layer {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background: rgba(15, 17, 21, 0.5);
-  -webkit-backdrop-filter: blur(24px);
-  backdrop-filter: blur(24px);
-  pointer-events: none;
-  z-index: 0;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-/* ===== 中心按钮 ===== */
+/* ===== 悬浮胶囊按钮（参考支付宝「按住说话」药丸） ===== */
 .mic-btn {
-  width: 144rpx;
-  height: 144rpx;
-  border-radius: 50%;
-  background: var(--input-bg);
-  border: 2rpx solid rgba(255, 255, 255, 0.18);
+  width: 620rpx;
+  height: 96rpx;
+  border-radius: 48rpx;
+  background: rgba(26, 30, 39, 0.45);
+  border: 2rpx solid rgba(255, 255, 255, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 16rpx;
   position: relative;
-  box-shadow:
-    0 12rpx 40rpx rgba(0, 0, 0, 0.35),
-    0 0 60rpx rgba(91, 141, 239, 0.22),
-    inset 0 2rpx 6rpx rgba(255, 255, 255, 0.12);
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.35), 0 0 0 1rpx rgba(255, 255, 255, 0.04);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, border-color 0.12s ease;
 }
 
-/* 待机呼吸光晕 */
+/* 待机态：柔和呼吸光晕 */
 .mic-btn.idle {
-  animation: breathe 2.8s ease-in-out infinite;
+  animation: pill-breathe 2.8s ease-in-out infinite;
 }
 
-@keyframes breathe {
-  0%, 100% { box-shadow: 0 0 24rpx rgba(91, 141, 239, 0.12); }
-  50% { box-shadow: 0 0 56rpx rgba(91, 141, 239, 0.32); }
+@keyframes pill-breathe {
+  0%, 100% { box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.35), 0 0 28rpx rgba(91, 141, 239, 0.08); border-color: rgba(255, 255, 255, 0.10); }
+  50% { box-shadow: 0 14rpx 48rpx rgba(0, 0, 0, 0.40), 0 0 44rpx rgba(91, 141, 239, 0.20); border-color: rgba(255, 255, 255, 0.18); }
 }
 
 .mic-btn.pressing {
-  transform: scale(0.96);
-  box-shadow:
-    0 8rpx 28rpx rgba(0, 0, 0, 0.3),
-    0 0 48rpx rgba(91, 141, 239, 0.35),
-    inset 0 4rpx 12rpx rgba(0, 0, 0, 0.25);
-  border-color: rgba(91, 141, 239, 0.6);
+  transform: scale(0.97);
+  background: rgba(26, 30, 39, 0.65);
+  border-color: rgba(91, 141, 239, 0.55);
+  box-shadow: 0 8rpx 28rpx rgba(0, 0, 0, 0.35), 0 0 32rpx rgba(91, 141, 239, 0.22);
 }
 
 .mic-btn.recording {
   background: linear-gradient(135deg, rgba(91, 141, 239, 0.95) 0%, rgba(124, 91, 239, 0.95) 100%);
   border-color: rgba(255, 255, 255, 0.22);
-  transform: scale(1.05);
-  box-shadow:
-    0 16rpx 56rpx rgba(0, 0, 0, 0.38),
-    0 0 80rpx rgba(91, 141, 239, 0.32),
-    inset 0 2rpx 8rpx rgba(255, 255, 255, 0.18);
+  box-shadow: 0 14rpx 48rpx rgba(0, 0, 0, 0.42), 0 0 60rpx rgba(91, 141, 239, 0.28);
 }
 
 .mic-btn.cancelling {
-  background: var(--card);
+  background: rgba(26, 30, 39, 0.55);
   border-color: var(--danger);
-  opacity: 0.6;
-  transform: scale(0.92);
-}
-
-.mic-wrap.cancelling .mic-icon .mic-body,
-.mic-wrap.cancelling .mic-icon .mic-arc {
-  border-color: var(--danger);
+  transform: scale(0.95);
+  opacity: 0.85;
 }
 
 .mic-btn.recognizing {
-  background: var(--card);
+  background: rgba(26, 30, 39, 0.55);
 }
 
 .mic-btn.failed {
@@ -96,49 +67,79 @@
 }
 
 .mic-btn.denied {
-  background: var(--card);
-  opacity: 0.45;
+  background: rgba(26, 30, 39, 0.35);
+  opacity: 0.55;
 }
 
-/* ===== 麦克风图形 ===== */
+/* ===== 胶囊内文字 ===== */
+.btn-text {
+  font-size: 30rpx;
+  color: var(--text);
+  line-height: 1;
+  letter-spacing: 0.5rpx;
+  max-width: 480rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.btn-text.recording,
+.btn-text.cancelling {
+  color: #FFFFFF;
+}
+
+.btn-text.failed {
+  color: #FFFFFF;
+}
+
+/* ===== 小麦克风图标 ===== */
 .mic-icon {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 36rpx;
+  height: 36rpx;
+  position: relative;
+  transform: scale(0.9);
 }
 
 .mic-body {
-  width: 40rpx;
-  height: 52rpx;
-  border-radius: 20rpx;
-  border: 4rpx solid var(--text);
+  width: 22rpx;
+  height: 28rpx;
+  border-radius: 11rpx;
+  border: 3rpx solid var(--text);
 }
 
 .mic-arc {
-  width: 20rpx;
-  height: 10rpx;
-  border: 4rpx solid var(--text);
+  width: 12rpx;
+  height: 6rpx;
+  border: 3rpx solid var(--text);
   border-top: none;
   border-left: none;
   border-right: none;
-  border-radius: 0 0 12rpx 12rpx;
-  margin-top: 6rpx;
+  border-radius: 0 0 8rpx 8rpx;
+  margin-top: 2rpx;
 }
 
-/* 录音中图标变白 */
+/* 录音中 / 取消态图标变白 / 变红 */
 .mic-icon.recording .mic-body,
 .mic-icon.recording .mic-arc {
   border-color: #FFFFFF;
 }
 
+.mic-icon.cancelling .mic-body,
+.mic-icon.cancelling .mic-arc {
+  border-color: var(--danger);
+}
+
 /* ===== 识别中：旋转圆环 ===== */
 .spinner-ring {
-  position: absolute;
-  width: 64rpx;
-  height: 64rpx;
+  position: relative;
+  width: 36rpx;
+  height: 36rpx;
   border-radius: 50%;
-  border: 6rpx solid transparent;
+  border: 4rpx solid transparent;
   border-top-color: var(--primary);
   border-right-color: var(--primary);
   animation: spin 0.8s linear infinite;
@@ -146,14 +147,11 @@
 
 .spinner-mask {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: var(--card);
-}
-
-/* 盖住麦克风图标显示圆环 */
-.spinner-mask {
   background: transparent;
 }
 
@@ -161,14 +159,15 @@
   to { transform: rotate(360deg); }
 }
 
-/* ===== 扩散波纹 ===== */
+/* ===== 扩散波纹（位于胶囊上方） ===== */
 .ripple {
   position: absolute;
+  top: 0;
+  left: 50%;
   width: 128rpx;
   height: 128rpx;
-  top: 50%;
-  left: 50%;
   transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 
 .ripple-item {
@@ -189,66 +188,46 @@
   100% { transform: scale(2.6); opacity: 0; }
 }
 
-/* ===== 音量柱 ===== */
+/* ===== 音量柱（位于胶囊上方） ===== */
 .vbar-row {
   position: absolute;
-  top: calc(50% - 140rpx);
+  top: -18rpx;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 8rpx;
-  height: 80rpx;
+  height: 64rpx;
+  pointer-events: none;
 }
 
 .vbar {
-  width: 10rpx;
-  border-radius: 6rpx;
+  width: 8rpx;
+  border-radius: 4rpx;
   background: linear-gradient(180deg, #5B8DEF 0%, #7C5BEF 100%);
   transition: height 0.12s ease;
 }
 
-/* ===== 状态文字 ===== */
-.status-line {
-  margin-top: 28rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12rpx;
-}
-
-.status-text {
-  font-size: 26rpx;
-  color: var(--text-2);
-}
-
-.status-recording {
-  color: var(--text);
-}
-
-.status-hint {
-  color: #FFD600;
-}
-
-.status-danger {
-  color: var(--danger);
-}
-
+/* ===== 取消提示（胶囊上方） ===== */
 .cancel-hint {
+  margin-top: 12rpx;
   font-size: 24rpx;
   color: var(--text-2);
 }
 
-.hint-active {
-  color: #FFD600;
+.cancel-hint.danger {
+  color: var(--danger);
+  font-weight: 500;
 }
 
+/* ===== 去开启 ===== */
 .go-open {
   font-size: 26rpx;
   color: var(--primary);
   padding: 4rpx 16rpx;
   border-radius: 12rpx;
   background: rgba(91, 141, 239, 0.12);
+  margin-left: 12rpx;
 }
 
 /* ===== 失败抖动 ===== */

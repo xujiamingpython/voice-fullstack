@@ -1,48 +1,42 @@
-<!-- 根元素 .mic-wrap 完全静态：不绑定任何动态 class / style，确保手势中途触摸目标不被重排 -->
+<!-- 根元素 .mic-wrap 保持完全静态：不绑定任何动态 class / style，确保手势中途触摸目标不被重排 -->
 <view class="mic-wrap" catchtouchstart="_touchStart" catchtouchmove="_touchMove"
   catchtouchend="_touchEnd" catchtouchcancel="_touchCancel">
 
-  <!-- 玻璃覆盖层：录音态才显示，根为内部子元素，pointer-events:none 不抢触摸 -->
-  <view wx:if="{{status === 'pressing' || status === 'recording' || status === 'recognizing'}}" class="rec-layer"></view>
-
-  <!-- 录音中：扩散波纹 -->
+  <!-- 录音中：扩散波纹（位于胶囊上方） -->
   <view wx:if="{{status === 'recording' && !cancelled}}" class="ripple">
     <view class="ripple-item r1"></view>
     <view class="ripple-item r2"></view>
     <view class="ripple-item r3"></view>
   </view>
 
-  <!-- 录音中：音量柱 -->
+  <!-- 录音中：音量柱（位于胶囊上方） -->
   <view wx:if="{{status === 'recording' && !cancelled}}" class="vbar-row">
-    <view wx:for="{{bars}}" wx:key="index" class="vbar" style="height: {{item * 72}}rpx;"></view>
+    <view wx:for="{{bars}}" wx:key="index" class="vbar" style="height: {{item * 56}}rpx;"></view>
   </view>
 
-  <!-- 中心按钮（动态 class 仅作用于按钮自身，不影响根触摸目标） -->
+  <!-- 悬浮胶囊按钮：参考支付宝「按住说话」药丸 -->
   <view class="mic-btn {{status}} {{cancelled ? 'cancelling' : ''}}">
-    <view class="mic-icon {{status}}">
-      <!-- 麦克风图形：圆角矩形 + 支架 -->
+    <view wx:if="{{status !== 'recognizing'}}" class="mic-icon {{status}} {{cancelled ? 'cancelling' : ''}}">
       <view class="mic-body"></view>
       <view class="mic-arc"></view>
-      <!-- 识别中：旋转圆环 -->
-      <view wx:if="{{status === 'recognizing'}}" class="spinner-ring"></view>
-      <view wx:if="{{status === 'recognizing'}}" class="spinner-mask"></view>
     </view>
+
+    <!-- 识别中 spinner -->
+    <view wx:if="{{status === 'recognizing'}}" class="spinner-ring"></view>
+    <view wx:if="{{status === 'recognizing'}}" class="spinner-mask"></view>
+
+    <text class="btn-text {{status}} {{cancelled ? 'cancelling' : ''}}">
+      <block wx:if="{{status === 'idle'}}">按住说话</block>
+      <block wx:elif="{{status === 'pressing'}}">松开发送</block>
+      <block wx:elif="{{status === 'recording'}}">{{cancelled ? '松开取消发送' : (cancelHint ? '继续上滑取消' : '正在聆听…')}}</block>
+      <block wx:elif="{{status === 'recognizing'}}">识别中…</block>
+      <block wx:elif="{{status === 'failed'}}">未识别，请重试</block>
+      <block wx:elif="{{status === 'denied'}}">需要麦克风权限</block>
+    </text>
+
+    <text wx:if="{{status === 'denied'}}" class="go-open" catchtap="_goOpen">去开启</text>
   </view>
 
-  <!-- 状态文字 -->
-  <view class="status-line">
-    <block wx:if="{{status === 'idle'}}"><text class="status-text">按住说话</text></block>
-    <block wx:elif="{{status === 'pressing'}}"><text class="status-text">松开发送</text></block>
-    <block wx:elif="{{status === 'recording'}}">
-      <text class="status-text {{cancelled ? 'status-danger' : (cancelHint ? 'status-hint' : 'status-recording')}}">{{cancelled ? '松开取消发送' : (cancelHint ? '继续上滑取消发送' : durationText + ' · 正在聆听…')}}</text>
-      <text wx:if="{{!cancelled && !cancelHint}}" class="cancel-hint">上滑取消发送</text>
-      <text wx:if="{{cancelHint && !cancelled}}" class="cancel-hint hint-active">继续上滑取消</text>
-    </block>
-    <block wx:elif="{{status === 'recognizing'}}"><text class="status-text">识别中…</text></block>
-    <block wx:elif="{{status === 'failed'}}"><text class="status-text status-danger">未识别，请重试</text></block>
-    <block wx:elif="{{status === 'denied'}}">
-      <text class="status-text">需要麦克风权限</text>
-      <text class="go-open" catchtap="_goOpen">去开启</text>
-    </block>
-  </view>
+  <!-- 取消提示：仅在录音取消态显示，位置在胶囊上方 -->
+  <text wx:if="{{status === 'recording' && cancelled}}" class="cancel-hint danger">松开取消发送</text>
 </view>
