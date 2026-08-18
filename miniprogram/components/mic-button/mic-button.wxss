@@ -46,6 +46,18 @@
   transform: scale(1.02);
 }
 
+.mic-btn.cancelling {
+  background: var(--card);
+  border-color: var(--danger);
+  opacity: 0.6;
+  transform: scale(0.92);
+}
+
+.mic-wrap.cancelling .mic-icon .mic-body,
+.mic-wrap.cancelling .mic-icon .mic-arc {
+  border-color: var(--danger);
+}
+
 .mic-btn.recognizing {
   background: var(--card);
 }
@@ -127,9 +139,9 @@
   position: absolute;
   width: 128rpx;
   height: 128rpx;
-  top: 0;
+  top: 50%;
   left: 50%;
-  margin-left: -64rpx;
+  transform: translate(-50%, -50%);
 }
 
 .ripple-item {
@@ -153,7 +165,9 @@
 /* ===== 音量柱 ===== */
 .vbar-row {
   position: absolute;
-  top: -110rpx;
+  top: calc(50% - 140rpx);
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 8rpx;

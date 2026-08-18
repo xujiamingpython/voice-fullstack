@@ -9,13 +9,29 @@ Component({
     duration: { type: Number, value: 0 },     // 录音时长 ms（录音中显示 mm:ss）
     volume: { type: Number, value: 0 },       // 音量 0-1（驱动音量柱）
     disabled: { type: Boolean, value: false },
+    overlayTop: { type: Number, value: 0 },      // 录音覆盖层上边界（px）
+    overlayBottom: { type: Number, value: 0 },   // 录音覆盖层下边界（px）
   },
 
   data: {
     bars: [0, 0, 0, 0, 0, 0, 0],
+    overlayStyle: '',
+    cancelled: false,
   },
 
   observers: {
+    status(s) {
+      // 录音态切换为全屏覆盖层，确保 icon 绝对居中、上滑取消有全屏触摸区域
+      if (s === 'pressing' || s === 'recording' || s === 'recognizing') {
+        const top = this.data.overlayTop || 0
+        const bottom = this.data.overlayBottom || 0
+        this.setData({
+          overlayStyle: `position:fixed;top:${top}px;bottom:${bottom}px;left:0;right:0;height:auto;background:rgba(0,0,0,0.88);z-index:100;`,
+        })
+      } else {
+        this.setData({ overlayStyle: '' })
+      }
+    },
     volume(v) {
       // 7 根音量柱随机起伏（以 v 为基准）
       const bars = []
@@ -38,19 +54,22 @@ Component({
       if (this.data.disabled) return
       this._startY = e.touches[0].clientY
       this._cancelled = false
+      this.setData({ cancelled: false })
       this.triggerEvent('start')
     },
     _touchMove(e) {
       if (this.data.disabled || this._cancelled) return
       const dy = e.touches[0].clientY - this._startY
-      if (dy < -80) {
-        // 上滑取消（80px 阈值）
+      if (dy < -50) {
+        // 上滑取消（50px 阈值，覆盖层下更容易触发）
         this._cancelled = true
+        this.setData({ cancelled: true })
         this.triggerEvent('cancel')
       }
     },
     _touchEnd() {
       if (this.data.disabled) return
+      this.setData({ cancelled: false })
       if (this._cancelled) {
         this.triggerEvent('cancelend')
       } else {
@@ -59,6 +78,7 @@ Component({
     },
     _touchCancel() {
       if (this.data.disabled) return
+      this.setData({ cancelled: false })
       this.triggerEvent('cancelend')
     },
     _goOpen() {

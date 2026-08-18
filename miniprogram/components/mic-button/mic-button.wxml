@@ -1,20 +1,20 @@
-<view class="mic-wrap {{status}}" catchtouchstart="_touchStart" catchtouchmove="_touchMove"
+<view class="mic-wrap {{status}} {{cancelled ? 'cancelling' : ''}}" style="{{overlayStyle}}" catchtouchstart="_touchStart" catchtouchmove="_touchMove"
   catchtouchend="_touchEnd" catchtouchcancel="_touchCancel">
 
   <!-- 录音中：扩散波纹 -->
-  <view wx:if="{{status === 'recording'}}" class="ripple">
+  <view wx:if="{{status === 'recording' && !cancelled}}" class="ripple">
     <view class="ripple-item r1"></view>
     <view class="ripple-item r2"></view>
     <view class="ripple-item r3"></view>
   </view>
 
   <!-- 录音中：音量柱 -->
-  <view wx:if="{{status === 'recording'}}" class="vbar-row">
+  <view wx:if="{{status === 'recording' && !cancelled}}" class="vbar-row">
     <view wx:for="{{bars}}" wx:key="index" class="vbar" style="height: {{item * 72}}rpx;"></view>
   </view>
 
   <!-- 中心按钮 -->
-  <view class="mic-btn {{status}}">
+  <view class="mic-btn {{status}} {{cancelled ? 'cancelling' : ''}}">
     <view class="mic-icon {{status}}">
       <!-- 麦克风图形：圆角矩形 + 支架 -->
       <view class="mic-body"></view>
@@ -30,8 +30,8 @@
     <block wx:if="{{status === 'idle'}}"><text class="status-text">按住说话</text></block>
     <block wx:elif="{{status === 'pressing'}}"><text class="status-text">松开发送</text></block>
     <block wx:elif="{{status === 'recording'}}">
-      <text class="status-text status-recording">{{durationText}} · 正在聆听…</text>
-      <text class="cancel-hint">上滑取消发送</text>
+      <text class="status-text {{cancelled ? 'status-danger' : 'status-recording'}}">{{cancelled ? '松开取消发送' : durationText + ' · 正在聆听…'}}</text>
+      <text wx:if="{{!cancelled}}" class="cancel-hint">上滑取消发送</text>
     </block>
     <block wx:elif="{{status === 'recognizing'}}"><text class="status-text">识别中…</text></block>
     <block wx:elif="{{status === 'failed'}}"><text class="status-text status-danger">未识别，请重试</text></block>

@@ -17,12 +17,13 @@ Page({
     theme: 'dark',
     statusBarHeight: 20,
     windowHeight: 667,
+    overlayTop: 0,        // 录音覆盖层上边界（px）
+    overlayBottom: 0,     // 录音覆盖层下边界（px）
     messages: [],
     scrollTo: '',
-    inputMode: false,     // false=语音  true=文字
-    textInput: '',
     micStatus: 'idle',    // idle|pressing|recording|recognizing|failed|denied
     recordMs: 0,
+    durationText: '00:00',
     volume: 0,
     offline: false,
     busy: false,
@@ -32,9 +33,13 @@ Page({
   /* ============ 生命周期 ============ */
   onLoad() {
     const sys = wx.getSystemInfoSync()
+    const rpx = sys.windowWidth / 750
+    const safeBottom = (sys.safeAreaInsets && sys.safeAreaInsets.bottom) || 0
     this.setData({
       statusBarHeight: sys.statusBarHeight || 20,
       windowHeight: sys.windowHeight,
+      overlayTop: (sys.statusBarHeight || 20) + 88 * rpx,
+      overlayBottom: 112 * rpx + safeBottom,
     })
     this._recording = false
     this._cancelRec = false
@@ -238,8 +243,9 @@ Page({
   _startRecord() {
     this._recording = true
     this._cancelRec = false
+    this._cancelledRound = false
     this._startTs = Date.now()
-    this.setData({ micStatus: 'recording', recordMs: 0, busy: true })
+    this.setData({ micStatus: 'recording', recordMs: 0, durationText: '00:00', busy: true })
     recorder.start({
       onStop: (res) => this._onRecStop(res),
       onVolume: (vol) => {
@@ -251,7 +257,11 @@ Page({
       },
     })
     this._recTimer = setInterval(() => {
-      this.setData({ recordMs: Date.now() - this._startTs })
+      const ms = Date.now() - this._startTs
+      const s = Math.floor(ms / 1000)
+      const m = Math.floor(s / 60)
+      const pad = (n) => (n < 10 ? '0' + n : '' + n)
+      this.setData({ recordMs: ms, durationText: pad(m) + ':' + pad(s % 60) })
     }, 500)
   },
 
@@ -260,26 +270,35 @@ Page({
     this._recording = false
     if (this._recTimer) clearInterval(this._recTimer)
     if (this._cancelRec) {
+      this._cancelledRound = true
       recorder.stop()
-      this.setData({ micStatus: 'idle', recordMs: 0, volume: 0, busy: false })
+      this.setData({ micStatus: 'idle', recordMs: 0, durationText: '00:00', volume: 0, busy: false })
       return
     }
+    this._cancelledRound = false
     this.setData({ micStatus: 'recognizing', volume: 0 })
     recorder.stop()
   },
 
   onRecCancel() {
-    // 上滑取消（视觉提示）
+    // 上滑取消：保持录音态，组件内部 cancelled=true 会显示「松开取消发送」
     this._cancelRec = true
-    this.setData({ micStatus: 'idle', volume: 0 })
+    this.setData({ micStatus: 'recording', volume: 0 })
   },
 
   onRecCancelEnd() {
+    this._cancelledRound = true
     if (this._recTimer) clearInterval(this._recTimer)
-    this.setData({ micStatus: 'idle', recordMs: 0, volume: 0, busy: false })
+    recorder.stop()
+    this.setData({ micStatus: 'idle', recordMs: 0, durationText: '00:00', volume: 0, busy: false })
   },
 
   _onRecStop(res) {
+    if (this._cancelledRound) {
+      this._cancelledRound = false
+      this.setData({ micStatus: 'idle', busy: false })
+      return
+    }
     if (res.errMsg && res.errMsg.indexOf('fail') === 0) {
       this.setData({ micStatus: 'failed' })
       setTimeout(() => this.setData({ micStatus: 'idle', busy: false }), 1500)

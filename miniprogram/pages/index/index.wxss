@@ -154,7 +154,7 @@
 .input-bar {
   background: var(--bg);
   border-top: 2rpx solid var(--divider);
-  padding-bottom: var(--safe-bottom);
+  padding: 24rpx 0 calc(var(--safe-bottom) + 12rpx);
   flex-shrink: 0;
 }
 
@@ -206,23 +206,3 @@
   color: #FFFFFF;
 }
 
-/* 底部工具行 */
-.input-tools {
-  display: flex;
-  justify-content: space-between;
-  padding: 16rpx 48rpx 24rpx;
-}
-
-.tool-icon-btn {
-  width: 80rpx;
-  height: 80rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.55;
-}
-
-.ti {
-  font-size: 44rpx;
-  line-height: 1;
-}

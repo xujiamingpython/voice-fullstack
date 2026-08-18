@@ -26,7 +26,7 @@
           <view class="empty-mic"></view>
         </view>
         <text class="empty-title">开启你的第一次对话</text>
-        <text class="empty-sub">按住下方按钮说话，或直接输入文字</text>
+        <text class="empty-sub">按住下方按钮说话</text>
         <view class="suggest-list">
           <view class="suggest" bindtap="onSuggest" data-text="今天北京天气怎么样？">
             <text>今天北京天气怎么样？</text>
@@ -78,41 +78,20 @@
     </view>
   </scroll-view>
 
-  <!-- 底部输入栏 -->
+  <!-- 底部输入栏：纯语音入口 -->
   <view class="input-bar">
-    <!-- 文字输入模式 -->
-    <view wx:if="{{inputMode}}" class="text-input-row">
-      <input class="text-input" value="{{textInput}}" placeholder="输入你的问题…"
-        placeholder-class="input-placeholder" confirm-type="send" bindinput="onTextInput"
-        bindconfirm="sendText" />
-      <view class="send-btn {{textInput ? 'active' : ''}}" bindtap="sendText">
-        <text>发送</text>
-      </view>
-    </view>
-
-    <!-- 语音模式 -->
-    <block wx:else>
-      <mic-button
-        status="{{micStatus}}"
-        duration="{{recordMs}}"
-        volume="{{volume}}"
-        disabled="{{offline || busy}}"
-        bind:start="onRecStart"
-        bind:end="onRecEnd"
-        bind:cancel="onRecCancel"
-        bind:cancelend="onRecCancelEnd"
-        bind:opensetting="onOpenSetting"
-      ></mic-button>
-    </block>
-
-    <!-- 底部工具行 -->
-    <view class="input-tools">
-      <view class="tool-icon-btn" bindtap="toggleInputMode">
-        <text class="ti">{{inputMode ? '🎤' : '⌨'}}</text>
-      </view>
-      <view class="tool-icon-btn" bindtap="goSessions">
-        <text class="ti">🕘</text>
-      </view>
-    </view>
+    <mic-button
+      status="{{micStatus}}"
+      duration="{{recordMs}}"
+      volume="{{volume}}"
+      disabled="{{offline || busy}}"
+      overlay-top="{{overlayTop}}"
+      overlay-bottom="{{overlayBottom}}"
+      bind:start="onRecStart"
+      bind:end="onRecEnd"
+      bind:cancel="onRecCancel"
+      bind:cancelend="onRecCancelEnd"
+      bind:opensetting="onOpenSetting"
+    ></mic-button>
   </view>
 </view>
