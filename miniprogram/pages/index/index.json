@@ -1,6 +1,5 @@
 {
   "usingComponents": {
-    "mic-button": "/components/mic-button/mic-button",
     "message-item": "/components/message-item/message-item",
     "tool-card": "/components/tool-card/tool-card",
     "map-card": "/components/map-card/map-card"

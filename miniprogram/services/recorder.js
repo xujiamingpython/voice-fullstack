@@ -1,6 +1,6 @@
 /**
  * 录音封装（wx.getRecorderManager）
- * 支持：长按录音 / 60s 上限 / 上滑取消 / 音量回调
+ * 支持：点击录音 / 60s 上限 / 音量回调
  * 录完 → onStop 回调返回 tempFilePath（Android mp3 / iOS aac）
  */
 const recorder = wx.getRecorderManager()

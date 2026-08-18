@@ -7,7 +7,7 @@ const recorder = require('../../services/recorder.js')
 const player = require('../../services/player.js')
 const storage = require('../../services/storage.js')
 const fmt = require('../../utils/format.js')
-const { RecorderGesture } = require('../../utils/rec-gesture.js')
+const { decide } = require('../../utils/rec-flow.js')
 
 const app = getApp()
 
@@ -20,15 +20,16 @@ Page({
     windowHeight: 667,
     messages: [],
     scrollTo: '',
-    micStatus: 'idle',    // idle|pressing|recording|recognizing|failed|denied
+    inputMode: 'voice',   // voice | text（语音 / 文字 输入方式）
+    recording: false,     // 是否正在录音
+    micDenied: false,     // 麦克风权限被拒
     recordMs: 0,
     durationText: '00:00',
     volume: 0,
     offline: false,
     busy: false,
     speakingMsgId: '',
-    recCancelHint: false, // 进入取消区（松手取消）
-    recSwipeHint: false,  // 上滑中（未到取消阈值）
+    textInput: '',        // 文字输入框内容
   },
 
   /* ============ 生命周期 ============ */
@@ -41,8 +42,7 @@ Page({
       windowHeight: sys.windowHeight,
     })
     this._recording = false
-    // 手势状态机（可单测），作为稳定父容器承接触摸
-    this._gesture = new RecorderGesture({ cancelThreshold: 70, hintThreshold: 25, minPressMs: 500 })
+    this._cancelledRound = false
     this._currentAiId = ''
     this._currentToolId = ''
     this._thinkingId = ''
@@ -178,7 +178,7 @@ Page({
     this._thinkingId = ''
     this._currentAiId = ''
     this._currentToolId = ''
-    this.setData({ busy: false, micStatus: 'idle', recordMs: 0, volume: 0 })
+    this.setData({ busy: false, recording: false, recordMs: 0, volume: 0 })
     this._scrollBottom()
   },
 
@@ -217,77 +217,61 @@ Page({
     }
   },
 
-  /* ============ 录音手势（页面级稳定手势层，包裹胶囊的父容器） ============ */
-  // 手势层始终稳定存在，touchstart 即开始录音；touchmove 上滑触发取消；touchend 松开发送/取消
-  onRecTouchStart(e) {
-    if (this.data.busy || this.data.offline || this.data.micStatus === 'denied') return
-    const t = (e.touches && e.touches[0]) || {}
-    if (!this._gesture.start(t.clientY)) return // 坐标无效则不开始
-    this.setData({ recCancelHint: false, recSwipeHint: false, micStatus: 'pressing' })
-    this.onRecStart()
-  },
-
-  onRecTouchMove(e) {
-    const t = (e.touches && e.touches[0]) || {}
-    if (typeof t.clientY !== 'number') return
-    const res = this._gesture.move(t.clientY)
-    if (res === 'cancel') {
-      if (!this.data.recCancelHint) this.setData({ recCancelHint: true, recSwipeHint: false })
-    } else if (res === 'hint') {
-      if (!this.data.recSwipeHint) this.setData({ recSwipeHint: true, recCancelHint: false })
-    } else {
-      if (this.data.recSwipeHint || this.data.recCancelHint) {
-        this.setData({ recSwipeHint: false, recCancelHint: false })
-      }
-    }
-  },
-
-  onRecTouchEnd() {
-    // 同步真实录音状态后再让状态机决策
-    this._gesture.recording = this._recording
-    const r = this._gesture.end()
-    this.setData({ recSwipeHint: false, recCancelHint: false })
-    if (r.action === 'cancel') {
-      this._cancelRecording()
+  /* ============ 点击式录音（不再使用长按手势，彻底规避 touchmove 不稳定） ============ */
+  // 主按钮：未录音→开始；录音中→完成并自动发送（文案「完成录音」）
+  onRecToggle() {
+    if (this.data.busy || this.data.offline) return
+    if (this.data.micDenied) {
+      this._openSetting()
       return
     }
-    this.onRecEnd()
+    const r = decide(this.data.recording, 'toggle')
+    if (r.action === 'start') {
+      this._startRecord()
+    } else if (r.action === 'finish') {
+      this._stopRecord(true) // 完成并自动发送
+    }
   },
 
-  onRecTouchCancel() {
-    this._gesture.cancel()
-    this.setData({ recSwipeHint: false, recCancelHint: false })
-    this._cancelRecording()
+  // 取消按钮：录音中点击 → 停止且不发送
+  onRecCancel() {
+    if (!this.data.recording) return
+    this._stopRecord(false) // 取消不发送
   },
 
-  onRecStart() {
-    if (this.data.busy || this.data.offline) return
+  // 切换输入方式（语音 / 文字）
+  toggleInputMode() {
+    // 切换前若正在录音，先取消
+    if (this.data.recording) this._stopRecord(false)
+    this.setData({ inputMode: this.data.inputMode === 'voice' ? 'text' : 'voice' })
+  },
+
+  _startRecord() {
     // 权限检查
     wx.getSetting({
       success: (res) => {
         if (res.authSetting['scope.record'] === false) {
-          this.setData({ micStatus: 'denied' })
+          this.setData({ micDenied: true })
           return
         }
         if (res.authSetting['scope.record'] === undefined) {
           wx.authorize({
             scope: 'scope.record',
-            success: () => this._startRecord(),
-            fail: () => this.setData({ micStatus: 'denied' }),
+            success: () => this._beginRecord(),
+            fail: () => this.setData({ micDenied: true }),
           })
         } else {
-          this._startRecord()
+          this._beginRecord()
         }
       },
     })
   },
 
-  _startRecord() {
+  _beginRecord() {
     this._recording = true
-    if (this._gesture) this._gesture.recording = true
     this._cancelledRound = false
     this._startTs = Date.now()
-    this.setData({ micStatus: 'recording', recordMs: 0, durationText: '00:00', busy: true })
+    this.setData({ recording: true, recordMs: 0, durationText: '00:00', volume: 0, busy: true })
     recorder.start({
       onStop: (res) => this._onRecStop(res),
       onVolume: (vol) => {
@@ -307,56 +291,52 @@ Page({
     }, 500)
   },
 
-  onRecEnd() {
+  // 统一停止录音。send=true 完成并自动发送；send=false 取消不发送
+  _stopRecord(send) {
     if (!this._recording) return
     this._recording = false
-    this._cancelledRound = false
+    this._cancelledRound = !send
     if (this._recTimer) clearInterval(this._recTimer)
-    this.setData({ micStatus: 'recognizing', volume: 0 })
+    if (!send) {
+      this.setData({ recording: false, recordMs: 0, durationText: '00:00', volume: 0, busy: false })
+    } else {
+      // 完成态：保持 busy 直到 ASR 返回，但退出录音按钮态
+      this.setData({ recording: false, volume: 0 })
+    }
     recorder.stop()
-  },
-
-  _cancelRecording() {
-    this._recording = false
-    if (this._gesture) this._gesture.recording = false
-    this._cancelledRound = true
-    if (this._recTimer) clearInterval(this._recTimer)
-    recorder.stop()
-    this.setData({ micStatus: 'idle', recordMs: 0, durationText: '00:00', volume: 0, busy: false })
   },
 
   _onRecStop(res) {
-    if (this._gesture) this._gesture.recording = false
     if (this._cancelledRound) {
       this._cancelledRound = false
-      this.setData({ micStatus: 'idle', busy: false })
+      this.setData({ busy: false })
       return
     }
     if (res.errMsg && res.errMsg.indexOf('fail') === 0) {
-      this.setData({ micStatus: 'failed' })
-      setTimeout(() => this.setData({ micStatus: 'idle', busy: false }), 1500)
+      this.setData({ busy: false })
+      wx.showToast({ title: '录音失败，请重试', icon: 'none' })
       return
     }
-    // 上传 ASR
+    // 上传 ASR 并自动发送
     api
       .uploadAudio(res.tempFilePath)
       .then((data) => {
         if (!data || !data.text) throw new Error('识别为空')
         this._sendUserMessage(data.text, data.mock)
-        this.setData({ micStatus: 'idle' })
+        this.setData({ busy: false })
       })
       .catch((err) => {
         console.error('[asr] fail', err)
-        this.setData({ micStatus: 'failed' })
-        setTimeout(() => this.setData({ micStatus: 'idle', busy: false }), 1500)
+        this.setData({ busy: false })
+        wx.showToast({ title: '语音识别失败', icon: 'none' })
       })
   },
 
-  onOpenSetting() {
+  _openSetting() {
     wx.openSetting({
       success: (res) => {
         if (res.authSetting['scope.record']) {
-          this.setData({ micStatus: 'idle' })
+          this.setData({ micDenied: false })
         }
       },
     })
@@ -383,10 +363,6 @@ Page({
   },
 
   /* ============ 文字输入 ============ */
-  toggleInputMode() {
-    this.setData({ inputMode: !this.data.inputMode })
-  },
-
   onTextInput(e) {
     this.setData({ textInput: e.detail.value })
   },

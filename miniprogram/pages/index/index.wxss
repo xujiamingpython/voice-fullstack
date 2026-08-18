@@ -153,29 +153,138 @@
   color: var(--text-2);
 }
 
-/* ===== 底部输入栏：完全透明，按钮悬浮 ===== */
+/* ===== 底部输入栏：完全透明，悬浮在页面底部 ===== */
 .input-bar {
   background: transparent;
   border-top: none;
-  padding: 0;
+  padding: 12rpx 24rpx calc(var(--safe-bottom) + 12rpx);
   flex-shrink: 0;
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
 }
 
-/* 稳定的手势层：作为胶囊的包裹父容器，稳定承接录音 touch 事件（上滑取消/松开发送） */
-.rec-gesture-layer {
-  position: relative;
-  width: 100%;
+/* 左侧输入方式切换图标（🎤 / ⌨） */
+.mode-toggle {
+  width: 80rpx;
+  height: 80rpx;
+  flex-shrink: 0;
+  border-radius: 40rpx;
+  background: var(--input-bg);
+  border: 2rpx solid var(--btn-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8rpx 0 calc(var(--safe-bottom) + 8rpx);
-  z-index: 5;
 }
 
-/* 禁用态（离线 / 处理中）把手势层让出 */
-.rec-gesture-layer.disabled {
-  pointer-events: none;
+.mode-toggle:active {
+  transform: scale(0.94);
+}
+
+.mode-label {
+  font-size: 24rpx;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1;
+}
+
+/* 语音模式：未录音「点击开始录音」 */
+.rec-start {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 44rpx;
+  background: var(--input-bg);
+  border: 2rpx solid var(--btn-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14rpx;
+  animation: pill-breathe 2.8s ease-in-out infinite;
+}
+
+.rec-start:active {
+  transform: scale(0.985);
+  border-color: rgba(91, 141, 239, 0.55);
+  background: rgba(26, 30, 39, 0.7);
+}
+
+.rec-start.denied {
+  animation: none;
+  border-color: var(--danger);
+}
+
+.rec-start-txt {
+  font-size: 30rpx;
+  color: var(--text);
+  letter-spacing: 0.5rpx;
+}
+
+/* 录音中：完成录音（主按钮）+ 取消（右侧）+ 计时 */
+.rec-ing {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.rec-finish {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 44rpx;
+  background: var(--primary-grad);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12rpx 40rpx rgba(91, 141, 239, 0.28);
+}
+
+.rec-finish:active {
+  transform: scale(0.985);
+  opacity: 0.92;
+}
+
+.rec-finish-txt {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.rec-cancel {
+  height: 88rpx;
+  padding: 0 36rpx;
+  border-radius: 44rpx;
+  background: var(--input-bg);
+  border: 2rpx solid var(--btn-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rec-cancel:active {
+  transform: scale(0.96);
+  border-color: var(--danger);
+}
+
+.rec-cancel text {
+  font-size: 30rpx;
+  color: var(--text);
+}
+
+.rec-dur {
+  font-size: 26rpx;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  min-width: 96rpx;
+  text-align: right;
+}
+
+@keyframes pill-breathe {
+  0%, 100% { box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.30), 0 0 24rpx rgba(91, 141, 239, 0.06); }
+  50% { box-shadow: 0 14rpx 48rpx rgba(0, 0, 0, 0.36), 0 0 40rpx rgba(91, 141, 239, 0.18); }
 }
 
 /* ===== 导航栏「清空」按钮 ===== */
@@ -205,20 +314,23 @@
 
 /* 文字输入 */
 .text-input-row {
+  flex: 1;
   display: flex;
   align-items: center;
   gap: 16rpx;
-  padding: 24rpx 32rpx 8rpx;
 }
 
 .text-input {
   flex: 1;
+  height: 88rpx;
+  line-height: 88rpx;
+  padding: 0 32rpx;
   background: var(--input-bg);
-  border-radius: 40rpx;
-  padding: 20rpx 32rpx;
+  border-radius: 44rpx;
   font-size: 30rpx;
   color: var(--text);
   border: 2rpx solid var(--btn-border);
+  box-sizing: border-box;
 }
 
 .input-placeholder {
@@ -227,8 +339,8 @@
 
 .send-btn {
   width: 120rpx;
-  height: 80rpx;
-  border-radius: 40rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   background: var(--input-bg);
   display: flex;
   align-items: center;

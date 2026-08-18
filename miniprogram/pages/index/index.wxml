@@ -29,7 +29,7 @@
           <view class="empty-mic"></view>
         </view>
         <text class="empty-title">开启你的第一次对话</text>
-        <text class="empty-sub">按住下方按钮说话</text>
+        <text class="empty-sub">点击下方按钮开始说话</text>
         <view class="suggest-list">
           <view class="suggest" bindtap="onSuggest" data-text="今天北京天气怎么样？">
             <text>今天北京天气怎么样？</text>
@@ -81,25 +81,45 @@
     </view>
   </scroll-view>
 
-  <!-- 底部输入栏：纯语音入口 -->
+  <!-- 底部输入栏：可切换「语音 / 文字」两种输入方式 -->
   <view class="input-bar">
-    <!-- 稳定的手势层：作为包裹胶囊的父容器承接所有 touch 事件。
-         触摸目标始终是本层，手指上滑移出胶囊后 touchmove/touchend 仍会持续派发，
-         因此「松开发送」「上滑取消」都可靠；catchtouchmove 还会阻止页面滚动。 -->
-    <view class="rec-gesture-layer {{((offline || busy) ? 'disabled' : '')}}"
-      catchtouchstart="onRecTouchStart"
-      catchtouchmove="onRecTouchMove"
-      catchtouchend="onRecTouchEnd"
-      catchtouchcancel="onRecTouchCancel">
-      <mic-button
-        status="{{micStatus}}"
-        duration="{{recordMs}}"
-        volume="{{volume}}"
-        disabled="{{offline || busy}}"
-        cancel-hint="{{recCancelHint}}"
-        swipe-hint="{{recSwipeHint}}"
-        bind:opensetting="onOpenSetting"
-      ></mic-button>
+    <!-- 左侧：输入方式切换（语音 / 文字） -->
+    <view class="mode-toggle" catchtap="toggleInputMode">
+      <text class="mode-label">{{inputMode === 'voice' ? '文字' : '语音'}}</text>
+    </view>
+
+    <!-- 语音模式 -->
+    <block wx:if="{{inputMode === 'voice'}}">
+      <!-- 未录音：全宽「点击开始录音」 -->
+      <view wx:if="{{!recording}}" class="rec-start {{micDenied ? 'denied' : ''}}" catchtap="onRecToggle">
+        <block wx:if="{{micDenied}}">
+          <text class="rec-start-txt">需要麦克风权限，点击开启</text>
+        </block>
+        <block wx:else>
+          <text class="rec-start-txt">点击开始录音</text>
+        </block>
+      </view>
+
+      <!-- 录音中：完成录音（主按钮）+ 取消（右侧）+ 计时 -->
+      <view wx:else class="rec-ing">
+        <view class="rec-finish" catchtap="onRecToggle">
+          <text class="rec-finish-txt">完成录音</text>
+        </view>
+        <view class="rec-cancel" catchtap="onRecCancel">
+          <text>取消</text>
+        </view>
+        <text class="rec-dur">{{durationText}}</text>
+      </view>
+    </block>
+
+    <!-- 文字模式 -->
+    <view wx:else class="text-input-row">
+      <input class="text-input" value="{{textInput}}" placeholder="输入你的问题…"
+        placeholder-class="input-placeholder" confirm-type="send"
+        bindinput="onTextInput" bindconfirm="sendText" />
+      <view class="send-btn {{textInput ? 'active' : ''}}" catchtap="sendText">
+        <text>发送</text>
+      </view>
     </view>
   </view>
 </view>
