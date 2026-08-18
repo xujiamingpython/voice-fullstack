@@ -7,6 +7,7 @@ const recorder = require('../../services/recorder.js')
 const player = require('../../services/player.js')
 const storage = require('../../services/storage.js')
 const fmt = require('../../utils/format.js')
+const { evaluateMove } = require('../../utils/rec-gesture.js')
 
 const app = getApp()
 
@@ -26,6 +27,8 @@ Page({
     offline: false,
     busy: false,
     speakingMsgId: '',
+    recCancelHint: false, // 进入取消区（松手取消）
+    recSwipeHint: false,  // 上滑中（未到取消阈值）
   },
 
   /* ============ 生命周期 ============ */
@@ -38,7 +41,8 @@ Page({
       windowHeight: sys.windowHeight,
     })
     this._recording = false
-    this._cancelRec = false
+    this._recCancel = false
+    this._recStartY = null
     this._currentAiId = ''
     this._currentToolId = ''
     this._thinkingId = ''
@@ -213,7 +217,57 @@ Page({
     }
   },
 
-  /* ============ 录音流程 ============ */
+  /* ============ 录音手势（页面级稳定手势层） ============ */
+  // 手势层始终存在，touchstart 即开始录音；touchmove 上滑触发取消；touchend 松开发送/取消
+  onRecTouchStart(e) {
+    if (this.data.busy || this.data.offline || this.data.micStatus === 'denied') return
+    const t = (e.touches && e.touches[0]) || {}
+    this._recStartY = typeof t.clientY === 'number' ? t.clientY : null
+    this._recCancel = false
+    this.setData({ recCancelHint: false, recSwipeHint: false, micStatus: 'pressing' })
+    this.onRecStart()
+  },
+
+  onRecTouchMove(e) {
+    if (this._recStartY == null) return
+    const t = (e.touches && e.touches[0]) || {}
+    if (typeof t.clientY !== 'number') return
+    const res = evaluateMove(this._recStartY, t.clientY, { cancelThreshold: 70, hintThreshold: 25 })
+    if (res === 'cancel') {
+      if (!this._recCancel) {
+        this._recCancel = true
+        this.setData({ recCancelHint: true, recSwipeHint: false })
+      }
+    } else if (res === 'hint') {
+      if (!this._recCancel) this.setData({ recSwipeHint: true, recCancelHint: false })
+    } else {
+      if (!this._recCancel) this.setData({ recSwipeHint: false, recCancelHint: false })
+    }
+  },
+
+  onRecTouchEnd() {
+    if (this._recStartY == null) return
+    this._recStartY = null
+    this.setData({ recSwipeHint: false, recCancelHint: false })
+    if (this._recCancel) {
+      this._cancelRecording()
+      return
+    }
+    // 太短（< 500ms）视为误触，直接取消，避免空录音
+    if (this._recording && Date.now() - this._startTs < 500) {
+      this._cancelRecording()
+      return
+    }
+    this.onRecEnd()
+  },
+
+  onRecTouchCancel() {
+    if (this._recStartY == null) return
+    this._recStartY = null
+    this.setData({ recSwipeHint: false, recCancelHint: false })
+    this._cancelRecording()
+  },
+
   onRecStart() {
     if (this.data.busy || this.data.offline) return
     // 权限检查
@@ -238,7 +292,6 @@ Page({
 
   _startRecord() {
     this._recording = true
-    this._cancelRec = false
     this._cancelledRound = false
     this._startTs = Date.now()
     this.setData({ micStatus: 'recording', recordMs: 0, durationText: '00:00', busy: true })
@@ -264,25 +317,14 @@ Page({
   onRecEnd() {
     if (!this._recording) return
     this._recording = false
-    if (this._recTimer) clearInterval(this._recTimer)
-    if (this._cancelRec) {
-      this._cancelledRound = true
-      recorder.stop()
-      this.setData({ micStatus: 'idle', recordMs: 0, durationText: '00:00', volume: 0, busy: false })
-      return
-    }
     this._cancelledRound = false
+    if (this._recTimer) clearInterval(this._recTimer)
     this.setData({ micStatus: 'recognizing', volume: 0 })
     recorder.stop()
   },
 
-  onRecCancel() {
-    // 上滑取消：保持录音态，组件内部 cancelled=true 会显示「松开取消发送」
-    this._cancelRec = true
-    this.setData({ micStatus: 'recording', volume: 0 })
-  },
-
-  onRecCancelEnd() {
+  _cancelRecording() {
+    this._recording = false
     this._cancelledRound = true
     if (this._recTimer) clearInterval(this._recTimer)
     recorder.stop()
@@ -320,6 +362,26 @@ Page({
       success: (res) => {
         if (res.authSetting['scope.record']) {
           this.setData({ micStatus: 'idle' })
+        }
+      },
+    })
+  },
+
+  // 结束 / 清空当前对话
+  onClearConversation() {
+    if (!this.data.messages.length) {
+      wx.showToast({ title: '对话已为空', icon: 'none' })
+      return
+    }
+    wx.showModal({
+      title: '结束对话',
+      content: '确定要清空当前对话记录吗？',
+      confirmText: '清空',
+      success: (res) => {
+        if (res.confirm) {
+          this.setData({ messages: [] })
+          // 通知后端重置会话上下文
+          ws.send({ type: 'reset' })
         }
       },
     })

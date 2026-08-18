@@ -159,6 +159,47 @@
   border-top: none;
   padding: 8rpx 0 calc(var(--safe-bottom) + 8rpx);
   flex-shrink: 0;
+  position: relative;
+}
+
+/* 稳定的手势层：始终覆盖输入栏，承接录音 touch 事件（上滑取消/松开发送） */
+.rec-gesture-layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 30;
+}
+
+/* 禁用态（离线 / 处理中 / 权限被拒）把手势层让出，便于点击「去开启」 */
+.rec-gesture-layer.disabled {
+  pointer-events: none;
+}
+
+/* ===== 导航栏「清空」按钮 ===== */
+.nav-actions {
+  position: absolute;
+  right: 196rpx;
+  top: 0;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+}
+
+.nav-clear {
+  font-size: 28rpx;
+  color: var(--text-2);
+  padding: 8rpx 24rpx;
+  border-radius: 28rpx;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2rpx solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-clear:active {
+  background: rgba(255, 82, 82, 0.16);
+  border-color: var(--danger);
+  color: var(--danger);
 }
 
 /* 文字输入 */

@@ -7,6 +7,9 @@
         <text class="nav-title">知行AI语音导航</text>
         <text class="nav-sub">AI 语音导航助手</text>
       </view>
+      <view class="nav-actions">
+        <view class="nav-clear" catchtap="onClearConversation">清空</view>
+      </view>
       <view class="capsule-space"></view>
     </view>
   </view>
@@ -80,15 +83,21 @@
 
   <!-- 底部输入栏：纯语音入口 -->
   <view class="input-bar">
+    <!-- 稳定的手势层：始终存在，覆盖整个输入栏；touch 事件上提到页面处理，
+         保证上滑取消时 touchmove 不会被中途改节点打断 -->
+    <view class="rec-gesture-layer {{(offline || busy || micStatus === 'denied') ? 'disabled' : ''}}"
+      catchtouchstart="onRecTouchStart"
+      catchtouchmove="onRecTouchMove"
+      catchtouchend="onRecTouchEnd"
+      catchtouchcancel="onRecTouchCancel"></view>
+
     <mic-button
       status="{{micStatus}}"
       duration="{{recordMs}}"
       volume="{{volume}}"
       disabled="{{offline || busy}}"
-      bind:start="onRecStart"
-      bind:end="onRecEnd"
-      bind:cancel="onRecCancel"
-      bind:cancelend="onRecCancelEnd"
+      cancel-hint="{{recCancelHint}}"
+      swipe-hint="{{recSwipeHint}}"
       bind:opensetting="onOpenSetting"
     ></mic-button>
   </view>
