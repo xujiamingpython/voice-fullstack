@@ -1,7 +1,7 @@
 .page {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  overflow: hidden;
   background: var(--bg);
   color: var(--text);
 }
@@ -11,6 +11,7 @@
   background: var(--nav-bg);
   position: relative;
   z-index: 10;
+  flex-shrink: 0;
 }
 
 .nav-main {
@@ -56,6 +57,7 @@
 .chat-scroll {
   flex: 1;
   min-height: 0;
+  overflow: hidden;
   position: relative;
 }
 
@@ -153,6 +155,7 @@
   background: var(--bg);
   border-top: 2rpx solid var(--divider);
   padding-bottom: var(--safe-bottom);
+  flex-shrink: 0;
 }
 
 /* 文字输入 */

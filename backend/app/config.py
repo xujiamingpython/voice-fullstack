@@ -1,9 +1,12 @@
 """应用配置：从 .env / 环境变量加载。"""
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
+# 从项目根目录加载 .env（backend/ 的上一级）
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+load_dotenv(_PROJECT_ROOT / ".env")
 
 # ---------- 服务 ----------
 HOST = os.getenv("HOST", "0.0.0.0")
@@ -12,10 +15,15 @@ LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 DEBUG = os.getenv("DEBUG", "1") == "1"
 DB_PATH = os.getenv("DB_PATH", os.path.join(os.path.dirname(__file__), "..", "..", "data", "voice.db"))
 
-# ---------- LLM（阿里云百炼 / Deepseek，OpenAI 兼容协议） ----------
+# ---------- LLM（阿里云百炼 / Deepseek / 腾讯混元，OpenAI 兼容协议） ----------
 ALIYUN_BAILIAN_API_KEY = os.getenv("ALIYUN_BAILIAN_API_KEY", "")
 LLM_MODEL = os.getenv("LLM_MODEL", "qwen-plus")
 LLM_BASE_URL = os.getenv("LLM_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1")
+
+# 腾讯云混元（tokenhub.tencentmaas.com，OpenAI 兼容）
+TENCENT_HUNYUAN_API_KEY = os.getenv("TENCENT_HUNYUAN_API_KEY", "")
+TENCENT_HUNYUAN_MODEL = os.getenv("TENCENT_HUNYUAN_MODEL", "hunyuan-role-latest")
+TENCENT_HUNYUAN_BASE_URL = os.getenv("TENCENT_HUNYUAN_BASE_URL", "https://tokenhub.tencentmaas.com/v1")
 
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
 DEEPSEEK_MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-chat")
@@ -50,7 +58,7 @@ MAX_INPUT_CHARS = int(os.getenv("MAX_INPUT_CHARS", "2000"))
 DEFAULT_CITY = os.getenv("DEFAULT_CITY", "北京")
 
 # ---------- 当前选中的 LLM 厂商 ----------
-LLM_PROVIDER = os.getenv("LLM_PROVIDER", "aliyun")  # aliyun | deepseek
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "aliyun")  # aliyun | deepseek | tencent
 
 # ---------- 系统提示词 ----------
 SYSTEM_PROMPT = os.getenv(

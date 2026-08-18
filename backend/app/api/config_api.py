@@ -20,6 +20,7 @@ VOICES = [
 MODELS = {
     "aliyun": ["qwen-turbo", "qwen-plus", "qwen-max"],
     "deepseek": ["deepseek-chat", "deepseek-reasoner"],
+    "tencent": ["hy3", "hunyuan-role-latest"],
 }
 
 
@@ -28,19 +29,28 @@ async def get_config():
     """服务配置（模型/音色/能力开关）。"""
     return {
         "llm_provider": config.LLM_PROVIDER,
-        "llm_model": config.LLM_MODEL,
+        "llm_model": _current_model(),
         "models": MODELS,
         "voices": VOICES,
         "default_city": config.DEFAULT_CITY,
         "max_input_chars": config.MAX_INPUT_CHARS,
         "max_tool_rounds": config.MAX_TOOL_ROUNDS,
         "deps": {
-            "llm": bool(config.ALIYUN_BAILIAN_API_KEY or config.DEEPSEEK_API_KEY),
+            "llm": bool(config.ALIYUN_BAILIAN_API_KEY or config.DEEPSEEK_API_KEY or config.TENCENT_HUNYUAN_API_KEY),
             "asr": bool(config.ALIYUN_BAILIAN_API_KEY or config.ALIYUN_ASR_TOKEN),
             "tts": bool(config.ALIYUN_BAILIAN_API_KEY or config.ALIYUN_TTS_TOKEN),
             "amap": bool(config.AMAP_SERVER_API_KEY),
         },
     }
+
+
+def _current_model() -> str:
+    """返回当前选中 provider 的模型名。"""
+    if config.LLM_PROVIDER == "tencent":
+        return config.TENCENT_HUNYUAN_MODEL
+    if config.LLM_PROVIDER == "deepseek":
+        return config.DEEPSEEK_MODEL
+    return config.LLM_MODEL
 
 
 @router.get("/tools")

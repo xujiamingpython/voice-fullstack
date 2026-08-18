@@ -1,4 +1,4 @@
-"""LLM 客户端：OpenAI 兼容协议（阿里云百炼 / Deepseek），支持流式 + Function Calling。"""
+"""LLM 客户端：OpenAI 兼容协议（阿里云百炼 / Deepseek / 腾讯混元），支持流式 + Function Calling。"""
 import json
 import logging
 from dataclasses import dataclass, field
@@ -29,6 +29,10 @@ class LLMClient:
             self.api_key = config.DEEPSEEK_API_KEY
             self.base_url = config.DEEPSEEK_BASE_URL
             self.model = config.DEEPSEEK_MODEL
+        elif provider == "tencent":
+            self.api_key = config.TENCENT_HUNYUAN_API_KEY
+            self.base_url = config.TENCENT_HUNYUAN_BASE_URL
+            self.model = config.TENCENT_HUNYUAN_MODEL
         else:
             self.api_key = config.ALIYUN_BAILIAN_API_KEY
             self.base_url = config.LLM_BASE_URL

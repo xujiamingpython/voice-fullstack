@@ -1,5 +1,5 @@
-<view class="mic-wrap {{status}}" bindtouchstart="_touchStart" bindtouchmove="_touchMove"
-  bindtouchend="_touchEnd" bindtouchcancel="_touchCancel">
+<view class="mic-wrap {{status}}" catchtouchstart="_touchStart" catchtouchmove="_touchMove"
+  catchtouchend="_touchEnd" catchtouchcancel="_touchCancel">
 
   <!-- 录音中：扩散波纹 -->
   <view wx:if="{{status === 'recording'}}" class="ripple">

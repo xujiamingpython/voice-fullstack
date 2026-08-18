@@ -43,8 +43,8 @@ Component({
     _touchMove(e) {
       if (this.data.disabled || this._cancelled) return
       const dy = e.touches[0].clientY - this._startY
-      if (dy < -120) {
-        // 上滑取消
+      if (dy < -80) {
+        // 上滑取消（80px 阈值）
         this._cancelled = true
         this.triggerEvent('cancel')
       }

@@ -1,4 +1,4 @@
-<view class="page theme-{{theme}}">
+<view class="page theme-{{theme}}" style="height: {{windowHeight}}px;">
   <!-- 自定义导航栏 -->
   <view class="nav-bar">
     <view class="nav-status" style="height: {{statusBarHeight}}px;"></view>
@@ -18,7 +18,7 @@
 
   <!-- 消息流 -->
   <scroll-view class="chat-scroll" scroll-y scroll-into-view="{{scrollTo}}"
-    scroll-with-animation bindscrolltolower="onScrollLower">
+    scroll-with-animation enhanced show-scrollbar="{{false}}" bindscrolltolower="onScrollLower">
     <view class="chat-inner">
       <!-- 空状态 -->
       <view wx:if="{{!messages.length}}" class="empty-state">

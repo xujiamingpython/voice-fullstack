@@ -5,5 +5,6 @@
     "tool-card": "/components/tool-card/tool-card",
     "map-card": "/components/map-card/map-card"
   },
-  "navigationStyle": "custom"
+  "navigationStyle": "custom",
+  "disableScroll": true
 }

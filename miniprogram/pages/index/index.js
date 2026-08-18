@@ -16,6 +16,7 @@ Page({
   data: {
     theme: 'dark',
     statusBarHeight: 20,
+    windowHeight: 667,
     messages: [],
     scrollTo: '',
     inputMode: false,     // false=语音  true=文字
@@ -31,7 +32,10 @@ Page({
   /* ============ 生命周期 ============ */
   onLoad() {
     const sys = wx.getSystemInfoSync()
-    this.setData({ statusBarHeight: sys.statusBarHeight || 20 })
+    this.setData({
+      statusBarHeight: sys.statusBarHeight || 20,
+      windowHeight: sys.windowHeight,
+    })
     this._recording = false
     this._cancelRec = false
     this._currentAiId = ''
@@ -142,12 +146,20 @@ Page({
 
     ws.on('error', (msg) => {
       this._removeThinking()
+      const message = (msg && msg.message) || '服务暂时不可用，请稍后重试'
+      // 去重：3 秒内相同错误不再重复 push
+      const last = this.data.messages[this.data.messages.length - 1]
+      const now = Date.now()
+      if (last && last.role === 'error' && last.content === message && now - last.ts < 3000) {
+        this._cleanupRound()
+        return
+      }
       this._pushMsg({
         id: 'm' + _msgSeq++,
         role: 'error',
         type: 'text',
-        content: (msg && msg.message) || '服务暂时不可用，请稍后重试',
-        ts: Date.now(),
+        content: message,
+        ts: now,
       })
       this._cleanupRound()
     })
@@ -259,7 +271,7 @@ Page({
   onRecCancel() {
     // 上滑取消（视觉提示）
     this._cancelRec = true
-    this.setData({ micStatus: 'idle' })
+    this.setData({ micStatus: 'idle', volume: 0 })
   },
 
   onRecCancelEnd() {
