@@ -157,22 +157,23 @@
 .input-bar {
   background: transparent;
   border-top: none;
-  padding: 8rpx 0 calc(var(--safe-bottom) + 8rpx);
+  padding: 0;
   flex-shrink: 0;
   position: relative;
 }
 
-/* 稳定的手势层：始终覆盖输入栏，承接录音 touch 事件（上滑取消/松开发送） */
+/* 稳定的手势层：作为胶囊的包裹父容器，稳定承接录音 touch 事件（上滑取消/松开发送） */
 .rec-gesture-layer {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  z-index: 30;
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8rpx 0 calc(var(--safe-bottom) + 8rpx);
+  z-index: 5;
 }
 
-/* 禁用态（离线 / 处理中 / 权限被拒）把手势层让出，便于点击「去开启」 */
+/* 禁用态（离线 / 处理中）把手势层让出 */
 .rec-gesture-layer.disabled {
   pointer-events: none;
 }

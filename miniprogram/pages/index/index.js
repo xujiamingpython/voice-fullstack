@@ -7,7 +7,7 @@ const recorder = require('../../services/recorder.js')
 const player = require('../../services/player.js')
 const storage = require('../../services/storage.js')
 const fmt = require('../../utils/format.js')
-const { evaluateMove } = require('../../utils/rec-gesture.js')
+const { RecorderGesture } = require('../../utils/rec-gesture.js')
 
 const app = getApp()
 
@@ -41,8 +41,8 @@ Page({
       windowHeight: sys.windowHeight,
     })
     this._recording = false
-    this._recCancel = false
-    this._recStartY = null
+    // 手势状态机（可单测），作为稳定父容器承接触摸
+    this._gesture = new RecorderGesture({ cancelThreshold: 70, hintThreshold: 25, minPressMs: 500 })
     this._currentAiId = ''
     this._currentToolId = ''
     this._thinkingId = ''
@@ -217,44 +217,37 @@ Page({
     }
   },
 
-  /* ============ 录音手势（页面级稳定手势层） ============ */
-  // 手势层始终存在，touchstart 即开始录音；touchmove 上滑触发取消；touchend 松开发送/取消
+  /* ============ 录音手势（页面级稳定手势层，包裹胶囊的父容器） ============ */
+  // 手势层始终稳定存在，touchstart 即开始录音；touchmove 上滑触发取消；touchend 松开发送/取消
   onRecTouchStart(e) {
     if (this.data.busy || this.data.offline || this.data.micStatus === 'denied') return
     const t = (e.touches && e.touches[0]) || {}
-    this._recStartY = typeof t.clientY === 'number' ? t.clientY : null
-    this._recCancel = false
+    if (!this._gesture.start(t.clientY)) return // 坐标无效则不开始
     this.setData({ recCancelHint: false, recSwipeHint: false, micStatus: 'pressing' })
     this.onRecStart()
   },
 
   onRecTouchMove(e) {
-    if (this._recStartY == null) return
     const t = (e.touches && e.touches[0]) || {}
     if (typeof t.clientY !== 'number') return
-    const res = evaluateMove(this._recStartY, t.clientY, { cancelThreshold: 70, hintThreshold: 25 })
+    const res = this._gesture.move(t.clientY)
     if (res === 'cancel') {
-      if (!this._recCancel) {
-        this._recCancel = true
-        this.setData({ recCancelHint: true, recSwipeHint: false })
-      }
+      if (!this.data.recCancelHint) this.setData({ recCancelHint: true, recSwipeHint: false })
     } else if (res === 'hint') {
-      if (!this._recCancel) this.setData({ recSwipeHint: true, recCancelHint: false })
+      if (!this.data.recSwipeHint) this.setData({ recSwipeHint: true, recCancelHint: false })
     } else {
-      if (!this._recCancel) this.setData({ recSwipeHint: false, recCancelHint: false })
+      if (this.data.recSwipeHint || this.data.recCancelHint) {
+        this.setData({ recSwipeHint: false, recCancelHint: false })
+      }
     }
   },
 
   onRecTouchEnd() {
-    if (this._recStartY == null) return
-    this._recStartY = null
+    // 同步真实录音状态后再让状态机决策
+    this._gesture.recording = this._recording
+    const r = this._gesture.end()
     this.setData({ recSwipeHint: false, recCancelHint: false })
-    if (this._recCancel) {
-      this._cancelRecording()
-      return
-    }
-    // 太短（< 500ms）视为误触，直接取消，避免空录音
-    if (this._recording && Date.now() - this._startTs < 500) {
+    if (r.action === 'cancel') {
       this._cancelRecording()
       return
     }
@@ -262,8 +255,7 @@ Page({
   },
 
   onRecTouchCancel() {
-    if (this._recStartY == null) return
-    this._recStartY = null
+    this._gesture.cancel()
     this.setData({ recSwipeHint: false, recCancelHint: false })
     this._cancelRecording()
   },
@@ -292,6 +284,7 @@ Page({
 
   _startRecord() {
     this._recording = true
+    if (this._gesture) this._gesture.recording = true
     this._cancelledRound = false
     this._startTs = Date.now()
     this.setData({ micStatus: 'recording', recordMs: 0, durationText: '00:00', busy: true })
@@ -325,6 +318,7 @@ Page({
 
   _cancelRecording() {
     this._recording = false
+    if (this._gesture) this._gesture.recording = false
     this._cancelledRound = true
     if (this._recTimer) clearInterval(this._recTimer)
     recorder.stop()
@@ -332,6 +326,7 @@ Page({
   },
 
   _onRecStop(res) {
+    if (this._gesture) this._gesture.recording = false
     if (this._cancelledRound) {
       this._cancelledRound = false
       this.setData({ micStatus: 'idle', busy: false })
