@@ -1,5 +1,9 @@
-<view class="mic-wrap {{status}} {{cancelled ? 'cancelling' : ''}}" style="{{overlayStyle}}" catchtouchstart="_touchStart" catchtouchmove="_touchMove"
+<!-- 根元素 .mic-wrap 完全静态：不绑定任何动态 class / style，确保手势中途触摸目标不被重排 -->
+<view class="mic-wrap" catchtouchstart="_touchStart" catchtouchmove="_touchMove"
   catchtouchend="_touchEnd" catchtouchcancel="_touchCancel">
+
+  <!-- 玻璃覆盖层：录音态才显示，根为内部子元素，pointer-events:none 不抢触摸 -->
+  <view wx:if="{{status === 'pressing' || status === 'recording' || status === 'recognizing'}}" class="rec-layer"></view>
 
   <!-- 录音中：扩散波纹 -->
   <view wx:if="{{status === 'recording' && !cancelled}}" class="ripple">
@@ -13,7 +17,7 @@
     <view wx:for="{{bars}}" wx:key="index" class="vbar" style="height: {{item * 72}}rpx;"></view>
   </view>
 
-  <!-- 中心按钮 -->
+  <!-- 中心按钮（动态 class 仅作用于按钮自身，不影响根触摸目标） -->
   <view class="mic-btn {{status}} {{cancelled ? 'cancelling' : ''}}">
     <view class="mic-icon {{status}}">
       <!-- 麦克风图形：圆角矩形 + 支架 -->

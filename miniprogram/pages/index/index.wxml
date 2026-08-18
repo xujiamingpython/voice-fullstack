@@ -85,8 +85,6 @@
       duration="{{recordMs}}"
       volume="{{volume}}"
       disabled="{{offline || busy}}"
-      overlay-top="{{overlayTop}}"
-      overlay-bottom="{{overlayBottom}}"
       bind:start="onRecStart"
       bind:end="onRecEnd"
       bind:cancel="onRecCancel"

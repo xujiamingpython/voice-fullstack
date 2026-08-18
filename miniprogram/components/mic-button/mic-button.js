@@ -2,6 +2,11 @@
  * mic-button 组件：长按录音按钮（v3.0 规范 ④）
  * 状态：idle 待机 / pressing 按下 / recording 录音中 / recognizing 识别中 / failed 识别失败 / denied 权限被拒
  * 手势：长按开始→上滑取消→松开结束，事件抛给父级
+ *
+ * 关键约束：根元素 .mic-wrap 必须保持「完全静态」——不绑定任何动态 class / style。
+ * 否则在手势进行中（status 变化）setData 改根节点会触发微信重排触摸目标，
+ * 导致后续 touchmove 不再派发给按钮，上滑取消失效。
+ * 玻璃覆盖层用根内部的子元素（rec-layer）承载，录音态才渲染，绝不改根。
  */
 Component({
   properties: {
@@ -9,28 +14,19 @@ Component({
     duration: { type: Number, value: 0 },     // 录音时长 ms（录音中显示 mm:ss）
     volume: { type: Number, value: 0 },       // 音量 0-1（驱动音量柱）
     disabled: { type: Boolean, value: false },
-    overlayTop: { type: Number, value: 0 },      // 录音覆盖层上边界（px）
-    overlayBottom: { type: Number, value: 0 },   // 录音覆盖层下边界（px）
   },
 
   data: {
     bars: [0, 0, 0, 0, 0, 0, 0],
-    overlayStyle: '',
     cancelled: false,
     cancelHint: false,
   },
 
   observers: {
     status(s) {
-      // 录音态切换为全屏覆盖层，确保 icon 绝对居中、上滑取消有全屏触摸区域
-      if (s === 'pressing' || s === 'recording' || s === 'recognizing') {
-        const top = this.data.overlayTop || 0
-        const bottom = this.data.overlayBottom || 0
-        this.setData({
-          overlayStyle: `position:fixed;top:${top}px;bottom:${bottom}px;left:0;right:0;height:auto;background:rgba(0,0,0,0.45);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);z-index:100;`,
-        })
-      } else {
-        this.setData({ overlayStyle: '', cancelled: false, cancelHint: false })
+      // 仅复位内部状态，绝不修改根节点样式
+      if (s === 'idle') {
+        this.setData({ cancelled: false, cancelHint: false })
       }
     },
     volume(v) {
@@ -67,7 +63,7 @@ Component({
         this.setData({ cancelled: true, cancelHint: false })
         this.triggerEvent('cancel')
       } else if (dy < -12) {
-        // 上滑 12px 给出视觉提示
+        // 上滑 12px 给出视觉提示（继续上滑取消）
         this.setData({ cancelHint: true })
       } else {
         this.setData({ cancelHint: false })

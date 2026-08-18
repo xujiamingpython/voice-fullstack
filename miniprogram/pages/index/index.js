@@ -17,8 +17,6 @@ Page({
     theme: 'dark',
     statusBarHeight: 20,
     windowHeight: 667,
-    overlayTop: 0,        // 录音覆盖层上边界（px）
-    overlayBottom: 0,     // 录音覆盖层下边界（px）
     messages: [],
     scrollTo: '',
     micStatus: 'idle',    // idle|pressing|recording|recognizing|failed|denied
@@ -38,8 +36,6 @@ Page({
     this.setData({
       statusBarHeight: sys.statusBarHeight || 20,
       windowHeight: sys.windowHeight,
-      overlayTop: (sys.statusBarHeight || 20) + 88 * rpx,
-      overlayBottom: 112 * rpx + safeBottom,
     })
     this._recording = false
     this._cancelRec = false

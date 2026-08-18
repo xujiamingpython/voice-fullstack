@@ -5,6 +5,23 @@
   justify-content: center;
   height: 340rpx;
   position: relative;
+  z-index: 10;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* 玻璃覆盖层：录音态显示，全屏毛玻璃，不抢触摸 */
+.rec-layer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(15, 17, 21, 0.5);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  pointer-events: none;
+  z-index: 0;
   user-select: none;
   -webkit-user-select: none;
 }
