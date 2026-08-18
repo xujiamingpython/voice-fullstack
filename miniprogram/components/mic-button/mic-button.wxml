@@ -30,8 +30,9 @@
     <block wx:if="{{status === 'idle'}}"><text class="status-text">按住说话</text></block>
     <block wx:elif="{{status === 'pressing'}}"><text class="status-text">松开发送</text></block>
     <block wx:elif="{{status === 'recording'}}">
-      <text class="status-text {{cancelled ? 'status-danger' : 'status-recording'}}">{{cancelled ? '松开取消发送' : durationText + ' · 正在聆听…'}}</text>
-      <text wx:if="{{!cancelled}}" class="cancel-hint">上滑取消发送</text>
+      <text class="status-text {{cancelled ? 'status-danger' : (cancelHint ? 'status-hint' : 'status-recording')}}">{{cancelled ? '松开取消发送' : (cancelHint ? '继续上滑取消发送' : durationText + ' · 正在聆听…')}}</text>
+      <text wx:if="{{!cancelled && !cancelHint}}" class="cancel-hint">上滑取消发送</text>
+      <text wx:if="{{cancelHint && !cancelled}}" class="cancel-hint hint-active">继续上滑取消</text>
     </block>
     <block wx:elif="{{status === 'recognizing'}}"><text class="status-text">识别中…</text></block>
     <block wx:elif="{{status === 'failed'}}"><text class="status-text status-danger">未识别，请重试</text></block>

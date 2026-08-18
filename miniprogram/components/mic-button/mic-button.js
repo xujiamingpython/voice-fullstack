@@ -17,6 +17,7 @@ Component({
     bars: [0, 0, 0, 0, 0, 0, 0],
     overlayStyle: '',
     cancelled: false,
+    cancelHint: false,
   },
 
   observers: {
@@ -26,10 +27,10 @@ Component({
         const top = this.data.overlayTop || 0
         const bottom = this.data.overlayBottom || 0
         this.setData({
-          overlayStyle: `position:fixed;top:${top}px;bottom:${bottom}px;left:0;right:0;height:auto;background:rgba(0,0,0,0.88);z-index:100;`,
+          overlayStyle: `position:fixed;top:${top}px;bottom:${bottom}px;left:0;right:0;height:auto;background:rgba(0,0,0,0.45);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);z-index:100;`,
         })
       } else {
-        this.setData({ overlayStyle: '' })
+        this.setData({ overlayStyle: '', cancelled: false, cancelHint: false })
       }
     },
     volume(v) {
@@ -54,22 +55,27 @@ Component({
       if (this.data.disabled) return
       this._startY = e.touches[0].clientY
       this._cancelled = false
-      this.setData({ cancelled: false })
+      this.setData({ cancelled: false, cancelHint: false })
       this.triggerEvent('start')
     },
     _touchMove(e) {
       if (this.data.disabled || this._cancelled) return
       const dy = e.touches[0].clientY - this._startY
-      if (dy < -50) {
-        // 上滑取消（50px 阈值，覆盖层下更容易触发）
+      if (dy < -35) {
+        // 上滑超过 35px 触发取消
         this._cancelled = true
-        this.setData({ cancelled: true })
+        this.setData({ cancelled: true, cancelHint: false })
         this.triggerEvent('cancel')
+      } else if (dy < -12) {
+        // 上滑 12px 给出视觉提示
+        this.setData({ cancelHint: true })
+      } else {
+        this.setData({ cancelHint: false })
       }
     },
     _touchEnd() {
       if (this.data.disabled) return
-      this.setData({ cancelled: false })
+      this.setData({ cancelled: false, cancelHint: false })
       if (this._cancelled) {
         this.triggerEvent('cancelend')
       } else {
@@ -78,7 +84,7 @@ Component({
     },
     _touchCancel() {
       if (this.data.disabled) return
-      this.setData({ cancelled: false })
+      this.setData({ cancelled: false, cancelHint: false })
       this.triggerEvent('cancelend')
     },
     _goOpen() {
