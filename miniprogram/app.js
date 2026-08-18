@@ -5,7 +5,7 @@
 App({
   globalData: {
     sessionId: '',      // 游客会话 ID（UUID v4，本地持久化）
-    baseUrl: 'http://localhost:8000', // 开发期后端；上线改为 https://api.yourdomain.com
+    baseUrl: 'https://www.voicefullstack.online', // 生产后端域名
     theme: 'dark',      // dark | light
     config: null,       // GET /api/config 缓存（模型/音色/工具列表）
   },

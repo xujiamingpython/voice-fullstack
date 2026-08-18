@@ -20,7 +20,7 @@ Page({
     windowHeight: 667,
     messages: [],
     scrollTo: '',
-    inputMode: 'voice',   // voice | text（语音 / 文字 输入方式）
+    inputMode: 'text',    // text | voice（文字 / 语音 输入方式，默认文字）
     recording: false,     // 是否正在录音
     micDenied: false,     // 麦克风权限被拒
     recordMs: 0,
